@@ -1,0 +1,22 @@
+#!/bin/bash
+cd MPlayer-1.1.1
+./configure --cc="clang" \
+    --disable-mencoder \
+    --disable-unrarexec \
+    --disable-pnm \
+    --disable-jpeg \
+    --disable-png \
+    --disable-tga \
+    --disable-yuv4mpeg \
+    --disable-md5sum \
+    --disable-openal \
+    --disable-dvdnav \
+    --disable-ftp \
+    --disable-dvdread \
+    --disable-vcd \
+    --disable-tv \
+    --disable-networking \
+    --disable-inet6 \
+    --disable-freetype \
+    --disable-sortsub
+
