@@ -1,0 +1,96 @@
+#!/bin/bash
+download=true
+if [ -d "MPlayer-1.1.1" ]; then
+  read -p "Source directory already exists. Download again?" yn
+  if [ "$yn" != "y" ]; then
+    download=false
+  fi
+fi
+
+if [ "$download" = true ]; then
+  echo "Downloading mplayer source."
+  curl -O ftp://ftp.mplayerhq.hu/MPlayer/releases/MPlayer-1.1.1.tar.xz &&
+  unxz MPlayer-1.1.1.tar.xz &&
+  tar -xvf MPlayer-1.1.1.tar &&
+  rm MPlayer-1.1.1.tar
+  if [ ! -d "MPlayer-1.1.1" ]; then
+    echo "Download failed."
+    exit 1
+  fi
+fi
+
+cd ./MPlayer-1.1.1
+
+cv_file='libvo/vo_corevideo.m'
+gl_line='#include <OpenGL/gl.h>'
+find_result=`grep "$gl_line" "$cv_file"`
+
+echo "Patching $cv_file."
+if [ "$find_result" == "" ]; then
+  csv_line='#include <CoreServices/CoreServices.h>'
+  find_result=`cat -n "$cv_file" | grep "$csv_line" | cut -f 1`
+  line_num=`expr $find_result + 1`
+  sed -i '' "${line_num}i\\
+$gl_line
+" $cv_file
+
+else
+  echo "Already patched."
+fi
+
+read -p "Build now?" yn
+if [ "$yn" != "y" ]; then
+  exit 0
+fi
+
+build=true
+if [ -f "mplayer" ]; then
+  read -p "MPlayer excutable already exists. Continue building?" yn
+  if [ "$yn" != "y" ]; then
+    build=false
+  fi
+fi
+
+if [ "$build" = true ]; then
+  echo "Configuring."
+  ./configure --cc="clang" \
+      --disable-mencoder \
+      --disable-unrarexec \
+      --disable-pnm \
+      --disable-jpeg \
+      --disable-png \
+      --disable-tga \
+      --disable-yuv4mpeg \
+      --disable-md5sum \
+      --disable-openal \
+      --disable-dvdnav \
+      --disable-ftp \
+      --disable-dvdread \
+      --disable-vcd \
+      --disable-tv \
+      --disable-networking \
+      --disable-inet6 \
+      --disable-freetype \
+      --disable-sortsub
+
+  if [ $? != 0 ]; then
+    echo "Configuration failed."
+    exit 1
+  fi
+
+  make
+
+  if [ $? != 0 ]; then
+    echo "Build failed."
+    exit 1
+  fi
+  echo "Build complete."
+fi
+
+read -p "Copy MPlayer excutable to project folder?" yn
+if [ "$yn" != "y" ]; then
+  exit 0
+fi
+
+cp mplayer ../../MPlayerScreenSaverX/
+
