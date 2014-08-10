@@ -1,0 +1,44 @@
+Building MPlayerScreenSaverX
+----------------------------
+There are two ways to build MPlayerScreenSaverX:
+1. Run `xcodebuild` in Terminal to build the project with default settings. Or,
+2. Open MPlayerScreenSaverX.xcodeproj with Xcode to build the project with GUI.
+
+
+
+Getting MPlayer source code
+---------------------------
+A pre-compiled version of MPlayer excutable is already packed with the project.
+If you need the source code, run the commands below in Terminal:
+
+cd mplayer
+./get-mplayer
+
+This will run the get-mplayer script, which then download the source code for
+MPlayer version 1.1.1 from http://mplayerhq.hu/. The file libvo/vo_corevideo.m
+will also be automaticly patched, according to the bug report found on MacPorts
+website at http://trac.macports.org/ticket/40914.
+
+If you want to build MPlayer with the same optimized configuration I used, run:
+
+./configure-mpssx
+cd MPlayer-1.1.1
+make
+
+Note that you may need to download and build other additional libraries first.
+
+Once the build finished, you can then copy the MPlayer binary excutable to the
+project directory with the command:
+
+cp mplayer ../../MPlayerScreenSaverX/
+
+More information on building MPlayer and how to get other libraries at
+http://hexeract.wordpress.com/2009/04/12/how-to-compile-ffmpegmplayer-for-macosx/
+
+
+
+Credit
+------
+Thanks to niltsh (https://github.com/niltsh) on GitHub for creating MPlayerX
+(http://mplayerx.org). MPlayerScreenSaverX is largely influenced and inspired by
+him and his project.
