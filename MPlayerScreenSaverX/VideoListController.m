@@ -4,7 +4,7 @@
 
 - (void) awakeFromNib
 {
-	[tableView registerForDraggedTypes:@[VideoListItemTypeString, NSFilenamesPboardType]];
+  [tableView registerForDraggedTypes:@[VideoListItemTypeString, NSFilenamesPboardType]];
 }
 
 - (NSArray *)videos
@@ -55,14 +55,14 @@
   [aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
 
   if ([info draggingSource] == aTableView) {
-		return  NSDragOperationMove;
+    return  NSDragOperationMove;
     
   } else {
     
     NSPasteboard* pboard = [info draggingPasteboard];
     NSArray* urls = [pboard propertyListForType:NSFilenamesPboardType];
     if ([urls count] > 0)
-			return  NSDragOperationMove;
+      return  NSDragOperationMove;
   }
   
   return NSDragOperationNone;
@@ -71,15 +71,15 @@
 - (BOOL)tableView:(NSTableView*)aTableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
   if (row < 0)
-		row = 0;
+    row = 0;
   
   NSPasteboard* pboard = [info draggingPasteboard];
 
   if ([info draggingSource] == aTableView) {
-		NSArray *rows = [pboard propertyListForType:VideoListItemTypeString];
-		NSIndexSet *indexSet = [self indexSetFromRows:rows];
+    NSArray *rows = [pboard propertyListForType:VideoListItemTypeString];
+    NSIndexSet *indexSet = [self indexSetFromRows:rows];
     [self moveFromIndexes:indexSet toIndex:row];
-		return YES;
+    return YES;
   } else {
     NSArray* files = [pboard propertyListForType:NSFilenamesPboardType];
     if ([files count] > 0) {
@@ -87,7 +87,7 @@
       return YES;
     }
   }
-	
+  
   return NO;
 }
 
@@ -95,7 +95,7 @@
 {
   NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
   [rows enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		[indexSet addIndex:[obj intValue]];
+    [indexSet addIndex:[obj intValue]];
   }];
   return indexSet;
 }

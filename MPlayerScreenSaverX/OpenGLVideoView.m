@@ -96,7 +96,7 @@
   glClear(GL_COLOR_BUFFER_BIT);
   if (textureBuffer) {
     CVOpenGLTextureRef texture;
-		CVReturn result = CVOpenGLTextureCacheCreateTextureFromImage(NULL, textureCache, textureBuffer, NULL, &texture);
+    CVReturn result = CVOpenGLTextureCacheCreateTextureFromImage(NULL, textureCache, textureBuffer, NULL, &texture);
     if (result != kCVReturnSuccess) {
       [self.openGLContext flushBuffer];
       return ResultFailed;

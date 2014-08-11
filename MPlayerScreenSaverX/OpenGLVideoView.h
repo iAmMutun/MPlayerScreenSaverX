@@ -11,7 +11,7 @@
   NSSize  imageSize;
   NSPoint textureBound;
   CVOpenGLBufferRef       textureBuffer;
-	CVOpenGLTextureCacheRef textureCache;
+  CVOpenGLTextureCacheRef textureCache;
 }
 
 - (id)init;

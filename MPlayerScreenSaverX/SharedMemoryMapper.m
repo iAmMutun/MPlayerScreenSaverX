@@ -34,13 +34,13 @@
 - (ResultType)unshare
 {
   DebugLog(@"Unmapping shared memory [%@]", name);
-	if (bytes) {
-		if (munmap(bytes, length) != 0) {
+  if (bytes) {
+    if (munmap(bytes, length) != 0) {
       DebugError(@"Shared memory unmapping failed");
       return ResultFailed;
     }
     bytes = NULL;
-	}
+  }
   return ResultSuccess;
 }
 @end

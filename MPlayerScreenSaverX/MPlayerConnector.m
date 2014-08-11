@@ -167,7 +167,7 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
     videoPlayedFlag = YES;
     return 0;
   }
-	return 1;
+  return 1;
 }
 
 - (void)stop
