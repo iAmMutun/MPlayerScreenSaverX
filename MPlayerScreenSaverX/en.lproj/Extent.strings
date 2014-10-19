@@ -1,4 +1,4 @@
-"Fit"     = "Fit Screen";
-"Fill"    = "Fill Screen";
-"Stretch" = "Stretch To Screen";
-"Center"  = "Center To Screen";
+"Fit"     = "Scale to fit screen";
+"Fill"    = "Scale to fill Screen";
+"Stretch" = "Stretch to fill screen";
+"Center"  = "Center to screen";

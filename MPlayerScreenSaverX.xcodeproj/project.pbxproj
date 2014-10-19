@@ -114,7 +114,7 @@
 			path = en.lproj;
 			sourceTree = "<group>";
 		};
-		343CEDA21983B78F0012B13D /* Ressources */ = {
+		343CEDA21983B78F0012B13D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				343CED691983B77F0012B13D /* en.lproj */,
@@ -123,7 +123,7 @@
 				343CED741983B77F0012B13D /* MPlayerScreenSaverX Background.png */,
 				343CED751983B77F0012B13D /* MPlayerScreenSaverX Logo.png */,
 			);
-			name = Ressources;
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		34DF0EF9197D5533003C9323 = {
@@ -184,7 +184,7 @@
 				343CED831983B77F0012B13D /* VideoFrameBufferInfo.m */,
 				34DF0F26197D57F7003C9323 /* ConfigureSheet */,
 				34DF0F10197D5533003C9323 /* Supporting Files */,
-				343CEDA21983B78F0012B13D /* Ressources */,
+				343CEDA21983B78F0012B13D /* Resources */,
 			);
 			path = MPlayerScreenSaverX;
 			sourceTree = "<group>";
