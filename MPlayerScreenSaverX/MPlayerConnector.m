@@ -155,7 +155,7 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
   [mplayerOutputThread cancel];
   if (videoPlayedFlag) {
     DebugLog(@"MPlayer has stopped");
-    if (shuffle) {
+    if (shuffle && arc4random_uniform(2) == 0) {
       NSUInteger lowerBound = MIN(1, [videosQueue count]);
       NSUInteger upperBound = [videosQueue count];
       NSUInteger range = upperBound - lowerBound;
