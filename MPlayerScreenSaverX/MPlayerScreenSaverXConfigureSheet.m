@@ -1,16 +1,13 @@
 #import "MPlayerScreenSaverXConfigureSheet.h"
 #import <ScreenSaver/ScreenSaver.h>
+#import "Version.h"
 
 @implementation MPlayerScreenSaverXConfigureSheet
 
 - (void)awakeFromNib
 {
-  NSBundle *bundle = [NSBundle bundleWithIdentifier:BundleIdentifierString];
-  NSDictionary *infoDict = [bundle infoDictionary];
-  NSString *version = [infoDict objectForKey:@"CFBundleShortVersionString"];
-  [versionLabel setStringValue:version];
-  NSString *copyright = [infoDict objectForKey:@"NSHumanReadableCopyright"];
-  [copyrightLabel setStringValue:copyright];
+  [versionLabel setStringValue:@MPSSX_VERSION_READ];
+  [copyrightLabel setStringValue:@MPSSX_COPY];
 }
 
 - (void)reload

@@ -53,6 +53,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		340042911ADBE2B100F6552B /* Version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
 		343CED671983B77F0012B13D /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		343CED681983B77F0012B13D /* Common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Common.m; sourceTree = "<group>"; };
 		343CED6B1983B77F0012B13D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ConfigureSheet.xib; sourceTree = "<group>"; };
@@ -182,6 +183,7 @@
 				343CED7F1983B77F0012B13D /* SharedMemoryMapper.m */,
 				343CED821983B77F0012B13D /* VideoFrameBufferInfo.h */,
 				343CED831983B77F0012B13D /* VideoFrameBufferInfo.m */,
+				340042911ADBE2B100F6552B /* Version.h */,
 				34DF0F26197D57F7003C9323 /* ConfigureSheet */,
 				34DF0F10197D5533003C9323 /* Supporting Files */,
 				343CEDA21983B78F0012B13D /* Resources */,
@@ -361,7 +363,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1.0;
+				CURRENT_PROJECT_VERSION = 1.0.1;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -399,7 +401,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 1.0;
+				CURRENT_PROJECT_VERSION = 1.0.1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
