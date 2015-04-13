@@ -21,7 +21,8 @@ static MPlayerConnector *gMPlayerConnector;
     [userDefaults registerDefaults:@{DefaultVideoListKey: [[NSArray alloc] init],
                                     DefaultVolumeKey: @"5",
                                     DefaultMuteKey: @"NO",
-                                    DefaultExtentKey: FitToScreenKey}];
+                                    DefaultExtentKey: FitToScreenKey,
+                                    DefaultShuffleKey: @"NO"}];
   
     if (first) {
       mplayerConnector = [[MPlayerConnector alloc] init];

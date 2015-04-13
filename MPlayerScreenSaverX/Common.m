@@ -27,6 +27,7 @@ NSString * const DefaultVideoPathKey    = @"VideoPath";
 NSString * const DefaultMuteKey         = @"Mute";
 NSString * const DefaultVolumeKey       = @"Volume";
 NSString * const DefaultExtentKey       = @"Extent";
+NSString * const DefaultShuffleKey      = @"Shuffle";
 
 NSString * const FitToScreenKey     = @"Fit";
 NSString * const FillScreenKey      = @"Fill";

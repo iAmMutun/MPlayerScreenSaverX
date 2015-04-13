@@ -36,6 +36,7 @@
   //BOOL        validationFlag;
   //NSUInteger  validatedVideos;
   BOOL        videoPlayedFlag;
+  BOOL        shuffle;
 }
 
 - (id)init;

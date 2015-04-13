@@ -30,6 +30,9 @@
 
   NSInteger volume = [userDefaults integerForKey:DefaultVolumeKey];
   [volumeSlider setIntegerValue:volume];
+  
+  BOOL shuffle = [userDefaults boolForKey:DefaultShuffleKey];
+  [shuffleCheckbox setState:(shuffle ? NSOnState : NSOffState)];
 }
 
 - (IBAction)setMute:(id)sender
@@ -45,6 +48,7 @@
   [userDefaults setBool:([muteCheckbox state] == NSOnState) forKey:DefaultMuteKey];
   [userDefaults setInteger:[volumeSlider integerValue] forKey:DefaultVolumeKey];
   [userDefaults setObject:[videoListController videos] forKey:DefaultVideoListKey];
+  [userDefaults setBool:([shuffleCheckbox state] == NSOnState) forKey:DefaultShuffleKey];
   [userDefaults synchronize];
   [[NSApplication sharedApplication] endSheet:self];
 }

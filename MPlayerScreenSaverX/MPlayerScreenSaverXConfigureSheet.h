@@ -14,6 +14,7 @@
   IBOutlet NSTextField *copyrightLabel;
   IBOutlet ExtentModeController *extentModeController;
   IBOutlet VideoListController *videoListController;
+  IBOutlet NSButton * shuffleCheckbox;
 }
 
 - (void)awakeFromNib;

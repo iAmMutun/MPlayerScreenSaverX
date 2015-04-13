@@ -81,6 +81,17 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
                       nil];
   if (muteParam != nil)
     [mplayerArguments addObject:muteParam];
+  
+  shuffle = [userDefaults boolForKey:DefaultShuffleKey];
+  if (shuffle) {
+    NSUInteger count = [videosQueue count];
+    for (NSUInteger i = 0; i < count; i++) {
+      u_int32_t left = (u_int32_t)(count - i);
+      NSInteger j = i + arc4random_uniform(left);
+      [videosQueue exchangeObjectAtIndex:i withObjectAtIndex:j];
+    }
+  }
+  DebugLog(@"Shuffle: %@", (shuffle ? @"On" : @"Off"));
 }
 
 - (void)launch
@@ -144,7 +155,15 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
   [mplayerOutputThread cancel];
   if (videoPlayedFlag) {
     DebugLog(@"MPlayer has stopped");
-    [videosQueue addObject:currentVideo];
+    if (shuffle) {
+      NSUInteger lowerBound = MIN(1, [videosQueue count]);
+      NSUInteger upperBound = [videosQueue count];
+      NSUInteger range = upperBound - lowerBound;
+      NSUInteger i = lowerBound + arc4random_uniform((u_int32_t)range);
+      [videosQueue insertObject:currentVideo atIndex:i];
+    } else {
+      [videosQueue addObject:currentVideo];
+    }
   } else {
     DebugError(@"MPlayer has stopped without playing the video [%@]", [currentVideo valueForKey:DefaultVideoPathKey]);
   }

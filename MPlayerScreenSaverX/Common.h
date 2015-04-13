@@ -27,4 +27,5 @@ extern NSString * const FitToScreenKey;
 extern NSString * const FillScreenKey;
 extern NSString * const StretchToScreenKey;
 extern NSString * const CenterToScreenKey;
+extern NSString * const DefaultShuffleKey;
 #endif
