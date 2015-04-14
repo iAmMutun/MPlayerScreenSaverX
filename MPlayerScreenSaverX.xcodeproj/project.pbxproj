@@ -33,6 +33,10 @@
 		343CEDA01983B77F0012B13D /* VideoListController.h in Headers */ = {isa = PBXBuildFile; fileRef = 343CED841983B77F0012B13D /* VideoListController.h */; };
 		343CEDA11983B77F0012B13D /* VideoListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CED851983B77F0012B13D /* VideoListController.m */; };
 		343CEDA41983BD470012B13D /* mplayer in CopyFiles */ = {isa = PBXBuildFile; fileRef = 343CED711983B77F0012B13D /* mplayer */; };
+		344CB7B81ADC909500CFBB16 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 344CB7B71ADC909500CFBB16 /* AppDelegate.m */; };
+		344CB7BA1ADC909500CFBB16 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 344CB7B91ADC909500CFBB16 /* main.m */; };
+		344CB7BC1ADC909500CFBB16 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 344CB7BB1ADC909500CFBB16 /* Images.xcassets */; };
+		344CB7BF1ADC909500CFBB16 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 344CB7BD1ADC909500CFBB16 /* MainMenu.xib */; };
 		34DF0F08197D5533003C9323 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34DF0F07197D5533003C9323 /* Cocoa.framework */; };
 		34DF0F0A197D5533003C9323 /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34DF0F09197D5533003C9323 /* ScreenSaver.framework */; };
 		34DF0F24197D57EB003C9323 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34DF0F22197D57EB003C9323 /* CoreVideo.framework */; };
@@ -81,6 +85,13 @@
 		343CED831983B77F0012B13D /* VideoFrameBufferInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoFrameBufferInfo.m; sourceTree = "<group>"; };
 		343CED841983B77F0012B13D /* VideoListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoListController.h; sourceTree = "<group>"; };
 		343CED851983B77F0012B13D /* VideoListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoListController.m; sourceTree = "<group>"; };
+		344CB7B21ADC909500CFBB16 /* ScreenSaverDebugger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenSaverDebugger.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		344CB7B51ADC909500CFBB16 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		344CB7B61ADC909500CFBB16 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		344CB7B71ADC909500CFBB16 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		344CB7B91ADC909500CFBB16 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		344CB7BB1ADC909500CFBB16 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		344CB7BE1ADC909500CFBB16 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		34DF0F04197D5533003C9323 /* MPlayerScreenSaverX.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MPlayerScreenSaverX.saver; sourceTree = BUILT_PRODUCTS_DIR; };
 		34DF0F07197D5533003C9323 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		34DF0F09197D5533003C9323 /* ScreenSaver.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScreenSaver.framework; path = System/Library/Frameworks/ScreenSaver.framework; sourceTree = SDKROOT; };
@@ -92,6 +103,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		344CB7AF1ADC909500CFBB16 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		34DF0EFF197D5533003C9323 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -127,10 +145,32 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		344CB7B31ADC909500CFBB16 /* ScreenSaverDebugger */ = {
+			isa = PBXGroup;
+			children = (
+				344CB7B61ADC909500CFBB16 /* AppDelegate.h */,
+				344CB7B71ADC909500CFBB16 /* AppDelegate.m */,
+				344CB7BB1ADC909500CFBB16 /* Images.xcassets */,
+				344CB7BD1ADC909500CFBB16 /* MainMenu.xib */,
+				344CB7B41ADC909500CFBB16 /* Supporting Files */,
+			);
+			path = ScreenSaverDebugger;
+			sourceTree = "<group>";
+		};
+		344CB7B41ADC909500CFBB16 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				344CB7B51ADC909500CFBB16 /* Info.plist */,
+				344CB7B91ADC909500CFBB16 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		34DF0EF9197D5533003C9323 = {
 			isa = PBXGroup;
 			children = (
 				34DF0F0F197D5533003C9323 /* MPlayerScreenSaverX */,
+				344CB7B31ADC909500CFBB16 /* ScreenSaverDebugger */,
 				34DF0F06197D5533003C9323 /* Frameworks */,
 				34DF0F05197D5533003C9323 /* Products */,
 			);
@@ -142,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				34DF0F04197D5533003C9323 /* MPlayerScreenSaverX.saver */,
+				344CB7B21ADC909500CFBB16 /* ScreenSaverDebugger.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -237,6 +278,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		344CB7B11ADC909500CFBB16 /* ScreenSaverDebugger */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 344CB7D01ADC909600CFBB16 /* Build configuration list for PBXNativeTarget "ScreenSaverDebugger" */;
+			buildPhases = (
+				344CB7AE1ADC909500CFBB16 /* Sources */,
+				344CB7AF1ADC909500CFBB16 /* Frameworks */,
+				344CB7B01ADC909500CFBB16 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ScreenSaverDebugger;
+			productName = ScreenSaverDebugger;
+			productReference = 344CB7B21ADC909500CFBB16 /* ScreenSaverDebugger.app */;
+			productType = "com.apple.product-type.application";
+		};
 		34DF0F03197D5533003C9323 /* MPlayerScreenSaverX */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 34DF0F1B197D5534003C9323 /* Build configuration list for PBXNativeTarget "MPlayerScreenSaverX" */;
@@ -265,6 +323,11 @@
 			attributes = {
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = i.am.mutun;
+				TargetAttributes = {
+					344CB7B11ADC909500CFBB16 = {
+						CreatedOnToolsVersion = 6.3;
+					};
+				};
 			};
 			buildConfigurationList = 34DF0EFD197D5533003C9323 /* Build configuration list for PBXProject "MPlayerScreenSaverX" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -272,6 +335,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 34DF0EF9197D5533003C9323;
 			productRefGroup = 34DF0F05197D5533003C9323 /* Products */;
@@ -279,11 +343,21 @@
 			projectRoot = "";
 			targets = (
 				34DF0F03197D5533003C9323 /* MPlayerScreenSaverX */,
+				344CB7B11ADC909500CFBB16 /* ScreenSaverDebugger */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		344CB7B01ADC909500CFBB16 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				344CB7BC1ADC909500CFBB16 /* Images.xcassets in Resources */,
+				344CB7BF1ADC909500CFBB16 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		34DF0F01197D5533003C9323 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -310,6 +384,15 @@
 /* End PBXRezBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		344CB7AE1ADC909500CFBB16 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				344CB7BA1ADC909500CFBB16 /* main.m in Sources */,
+				344CB7B81ADC909500CFBB16 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		34DF0EFE197D5533003C9323 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -345,9 +428,61 @@
 			name = Extent.strings;
 			sourceTree = "<group>";
 		};
+		344CB7BD1ADC909500CFBB16 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				344CB7BE1ADC909500CFBB16 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		344CB7CC1ADC909600CFBB16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ScreenSaverDebugger/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		344CB7CD1ADC909600CFBB16 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = ScreenSaverDebugger/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		34DF0F19197D5534003C9323 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -456,6 +591,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		344CB7D01ADC909600CFBB16 /* Build configuration list for PBXNativeTarget "ScreenSaverDebugger" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				344CB7CC1ADC909600CFBB16 /* Debug */,
+				344CB7CD1ADC909600CFBB16 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		34DF0EFD197D5533003C9323 /* Build configuration list for PBXProject "MPlayerScreenSaverX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

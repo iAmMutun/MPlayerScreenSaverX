@@ -7,9 +7,9 @@
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "YES"
+            buildForTesting = "NO"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
+            buildForProfiling = "NO"
             buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
@@ -29,6 +29,15 @@
       buildConfiguration = "Debug">
       <Testables>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "344CB7B11ADC909500CFBB16"
+            BuildableName = "ScreenSaverDebugger.app"
+            BlueprintName = "ScreenSaverDebugger"
+            ReferencedContainer = "container:MPlayerScreenSaverX.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -60,8 +69,8 @@
       </PreActions>
       <PathRunnable
          runnableDebuggingMode = "0"
-         BundleIdentifier = "com.apple.ScreenSaver.Engine"
-         FilePath = "/System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app">
+         BundleIdentifier = "th.in.iammutun.ScreenSaverDebugger"
+         FilePath = "/Users/iammutun/Developer/Projects/MPlayerScreenSaverX/build/Debug/ScreenSaverDebugger.app">
       </PathRunnable>
       <MacroExpansion>
          <BuildableReference
@@ -74,7 +83,7 @@
       </MacroExpansion>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-background -module &quot;$FULL_PRODUCT_NAME&quot;"
+            argument = "$FULL_PRODUCT_NAME"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
@@ -87,6 +96,15 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "34DF0F03197D5533003C9323"
+            BuildableName = "MPlayerScreenSaverX.saver"
+            BlueprintName = "MPlayerScreenSaverX"
+            ReferencedContainer = "container:MPlayerScreenSaverX.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
