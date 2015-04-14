@@ -6,19 +6,47 @@ NSString * const VideoWillStartNotification   = @"VideoWillStartNotification";
 NSString * const VideoHasStopNotification     = @"VideoHasStopNotification";
 NSString * const VideoWillRenderNotification  = @"VideoWillRenderNotification";
 
-NSString * const kVSMPlayerNoConfig       = @"-noconfig";
-NSString * const kVSMPlayerNoConfigParam  = @"all";
-NSString * const kVSMPlayerLoop           = @"-loop";
-NSString * const kVSMPlayerLoopParam      = @"0";
-NSString * const kVSMPlayerSlave          = @"-slave";
-NSString * const kVSMPlayerQuiet          = @"-quiet";
-NSString * const kVSMPlayerVFCLR          = @"-vf-clr";
-NSString * const kVSMPlayerVO             = @"-vo";
-NSString * const kVSMPlayerVOParam        = @"corevideo:shared_buffer:buffer_name=";
-NSString * const kVSMPlayerVolume         = @"-volume";
-NSString * const kVSMPlayerNoAutoSub      = @"-noautosub";
-NSString * const kVSMPlayerNoSub          = @"-nosub";
-NSString * const kVSMPlayerNoSound        = @"-nosound";
+NSString * const kMPlayerNoConfig       = @"-noconfig";
+NSString * const kMPlayerNoConfigParam  = @"all";
+NSString * const kMPlayerLoop           = @"-loop";
+NSString * const kMPlayerLoopParam      = @"0";
+NSString * const kMPlayerSlave          = @"-slave";
+NSString * const kMPlayerIdle          = @"-idle";
+NSString * const kMPlayerQuiet          = @"-quiet";
+NSString * const kMPlayerVFCLR          = @"-vf-clr";
+NSString * const kMPlayerVO             = @"-vo";
+NSString * const kMPlayerVOParam        = @"corevideo:shared_buffer:buffer_name=";
+NSString * const kMPlayerVolume         = @"-volume";
+NSString * const kMPlayerNoAutoSub      = @"-noautosub";
+NSString * const kMPlayerNoSub          = @"-nosub";
+NSString * const kMPlayerNoSound        = @"-nosound";
+
+@interface MPlayerConnector ()
+{
+  NSTask    * mplayerTask;
+  NSPipe    * mplayerInputPipe;
+  NSPipe    * mplayerOutputPipe;
+  NSThread  * mplayerOutputThread;
+  NSString  * mplayerExcutablePath;
+  NSConnection    * mplayerConnection;
+  NSMutableArray  * mplayerArguments;
+  NSMutableDictionary   * mplayerEnvironments;
+  NSNotificationCenter  * notificationCenter;
+  SharedMemoryMapper  * sharedBuffer;
+  NSString        * sharedIdentifier;
+  NSMutableArray  * videosQueue;
+  NSDictionary    * currentVideo;
+  NSDictionary    * nextVideo;
+  NSString  * voParam;
+  NSString  * volumeParam;
+  NSString  * muteParam;
+  BOOL        videoPlayedFlag;
+  BOOL        shuffle;
+}
+- (void)analyzeMPlayerOutput:(NSFileHandle *)outputHandle;
+- (void)mplayerHasQuit:(NSNotification *)aNotification;
+- (void)nextVideo;
+@end
 
 @implementation MPlayerConnector
 
@@ -54,30 +82,28 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
 
 - (void)refreshArguments
 {
-  //validationFlag = YES;
-  //validatedVideos = 0;
   DebugLog(@"Loading options");
 
   ScreenSaverDefaults *userDefaults = [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
   videosQueue = [[NSMutableArray alloc] initWithArray:[userDefaults valueForKey:DefaultVideoListKey]];
-  voParam = [NSString stringWithFormat:@"%@%@", kVSMPlayerVOParam, sharedIdentifier];
+  voParam = [NSString stringWithFormat:@"%@%@", kMPlayerVOParam, sharedIdentifier];
   volumeParam = [userDefaults stringForKey:DefaultVolumeKey];
   BOOL mute = [userDefaults boolForKey:DefaultMuteKey];
-  muteParam = (mute ? kVSMPlayerNoSound : nil);
+  muteParam = (mute ? kMPlayerNoSound : nil);
 
   DebugLog(@"Volume: %@", volumeParam);
   DebugLog(@"Mute: %@", (mute ? @"Muted" : @"Not muted"));
   
   mplayerArguments = [[NSMutableArray alloc] initWithObjects:
-                      kVSMPlayerNoConfig, kVSMPlayerNoConfigParam,
-                      kVSMPlayerSlave,
-                      kVSMPlayerQuiet,
-                      kVSMPlayerVFCLR,
-                      kVSMPlayerNoAutoSub,
-                      kVSMPlayerNoSub,
-                      kVSMPlayerVO, voParam,
-                      //kVSMPlayerLoop, kVSMPlayerLoopParam,
-                      kVSMPlayerVolume, volumeParam,
+                      kMPlayerNoConfig, kMPlayerNoConfigParam,
+                      kMPlayerSlave,
+                      kMPlayerIdle,
+                      kMPlayerQuiet,
+                      kMPlayerVFCLR,
+                      kMPlayerNoAutoSub,
+                      kMPlayerNoSub,
+                      kMPlayerVO, voParam,
+                      kMPlayerVolume, volumeParam,
                       nil];
   if (muteParam != nil)
     [mplayerArguments addObject:muteParam];
@@ -96,19 +122,14 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
 
 - (void)launch
 {
+  [self refreshArguments];
   DebugLog(@"Starting MPlayer");
   if ([videosQueue count] == 0) {
     DebugError(@"No video in queue. Halted");
     return;
   }
 
-  NSMutableArray *arguments = [NSMutableArray arrayWithArray:mplayerArguments];
-  currentVideo = videosQueue[0];
-  [videosQueue removeObjectAtIndex:0];
-  NSString *videoPath = [currentVideo valueForKey:DefaultVideoPathKey];
-  [arguments addObject:videoPath];
-
-  videoPlayedFlag = NO;
+  mplayerInputPipe = [[NSPipe alloc] init];
   mplayerOutputPipe = [[NSPipe alloc] init];
   mplayerOutputThread = [[NSThread alloc] initWithTarget:self selector:@selector(analyzeMPlayerOutput:) object:[mplayerOutputPipe fileHandleForReading]];
   [mplayerOutputThread start];
@@ -116,11 +137,13 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
   [notificationCenter addObserver:self selector:@selector(mplayerHasQuit:) name:NSTaskDidTerminateNotification object:mplayerTask];
   [mplayerTask setLaunchPath:mplayerExcutablePath];
   [mplayerTask setEnvironment:mplayerEnvironments];
-  [mplayerTask setArguments:arguments];
+  [mplayerTask setArguments:mplayerArguments];
+  [mplayerTask setStandardInput:mplayerInputPipe];
   [mplayerTask setStandardOutput:mplayerOutputPipe];
   [mplayerTask setStandardError:mplayerOutputPipe];
   [mplayerTask launch];
   DebugLog(@"MPlayer has started");
+  [self nextVideo];
 }
 
 - (void)terminate
@@ -153,21 +176,22 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
 {
   [notificationCenter removeObserver:self name:NSTaskDidTerminateNotification object:mplayerTask];
   [mplayerOutputThread cancel];
-  if (videoPlayedFlag) {
-    DebugLog(@"MPlayer has stopped");
-    if (shuffle && arc4random_uniform(2) == 0) {
-      NSUInteger lowerBound = MIN(1, [videosQueue count]);
-      NSUInteger upperBound = [videosQueue count];
-      NSUInteger range = upperBound - lowerBound;
-      NSUInteger i = lowerBound + arc4random_uniform((u_int32_t)range);
-      [videosQueue insertObject:currentVideo atIndex:i];
-    } else {
-      [videosQueue addObject:currentVideo];
-    }
-  } else {
-    DebugError(@"MPlayer has stopped without playing the video [%@]", [currentVideo valueForKey:DefaultVideoPathKey]);
+}
+
+- (void)nextVideo
+{
+  videoPlayedFlag = NO;
+  if ([videosQueue count] == 0) {
+    DebugError(@"No video in queue. Halted");
+    [self terminate];
+    return;
   }
-  [self launch];
+  currentVideo = videosQueue[0];
+  [videosQueue removeObjectAtIndex:0];
+  NSString *videoPath = [currentVideo valueForKey:DefaultVideoPathKey];
+  NSString *cmd = [NSString stringWithFormat:@"loadfile \"%@\" 1\n", videoPath];
+  NSFileHandle *fh = [mplayerInputPipe fileHandleForWriting];
+  [fh writeData:[cmd dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
 - (int)startWithWidth:(bycopy int)width
@@ -191,9 +215,23 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
 
 - (void)stop
 {
-  DebugLog(@"Video has stopped");
   [notificationCenter postNotificationName:VideoHasStopNotification object:self];
   [sharedBuffer unshare];
+  if (videoPlayedFlag) {
+    DebugLog(@"Video has stopped");
+    if (shuffle && arc4random_uniform(2) == 0) {
+      NSUInteger lowerBound = MIN(1, [videosQueue count]);
+      NSUInteger upperBound = [videosQueue count];
+      NSUInteger range = upperBound - lowerBound;
+      NSUInteger i = lowerBound + arc4random_uniform((u_int32_t)range);
+      [videosQueue insertObject:currentVideo atIndex:i];
+    } else {
+      [videosQueue addObject:currentVideo];
+    }
+  } else {
+    DebugError(@"MPlayer can't play the video [%@]", [currentVideo valueForKey:DefaultVideoPathKey]);
+  }
+  [self nextVideo];
 }
 
 - (void)render

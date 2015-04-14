@@ -51,7 +51,6 @@ static MPlayerConnector *gMPlayerConnector;
 {
   [self addSubview:openglView];
   if (first) {
-    [mplayerConnector refreshArguments];
     [mplayerConnector launch];
   }
   [super startAnimation];

@@ -598,6 +598,7 @@
 				344CB7CD1ADC909600CFBB16 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		34DF0EFD197D5533003C9323 /* Build configuration list for PBXProject "MPlayerScreenSaverX" */ = {
 			isa = XCConfigurationList;
