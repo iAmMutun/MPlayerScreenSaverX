@@ -1,4 +1,4 @@
-# MPlayerScreenSaverX #
+# ![Logo](http://mutun.in.th/projects/mpssx/thumbnail.png)MPlayerScreenSaverX #
 ## Save your Mac screen with any video files you want! ##
 
 MPlayerScreenSaverX is powered by [MPlayer](http://www.mplayerhq.hu), one of the most powerful and open source media players for OS X. This means MPlayerScreenSaverX is capable of open almost any media files and play it out on your Mac screen as a screen saver!
