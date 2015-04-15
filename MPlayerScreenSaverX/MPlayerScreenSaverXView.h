@@ -3,7 +3,7 @@
 
 #import "Common.h"
 #import "MPlayerScreenSaverXConfigureSheet.h"
-#import "MPlayerConnector.h"
+#import "MPlayerController.h"
 #import "OpenGLVideoView.h"
 #import <Cocoa/Cocoa.h>
 #import <ScreenSaver/ScreenSaver.h>
@@ -12,7 +12,7 @@
 {
   BOOL first;
   OpenGLVideoView   * openglView;
-  MPlayerConnector  * mplayerConnector;
+  MPlayerController * mplayerController;
   IBOutlet MPlayerScreenSaverXConfigureSheet * configureSheet;
 }
 

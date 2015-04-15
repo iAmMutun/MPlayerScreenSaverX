@@ -13,8 +13,8 @@
 		343CED891983B77F0012B13D /* Extent.strings in Resources */ = {isa = PBXBuildFile; fileRef = 343CED6C1983B77F0012B13D /* Extent.strings */; };
 		343CED8A1983B77F0012B13D /* ExtentModeController.h in Headers */ = {isa = PBXBuildFile; fileRef = 343CED6E1983B77F0012B13D /* ExtentModeController.h */; };
 		343CED8B1983B77F0012B13D /* ExtentModeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CED6F1983B77F0012B13D /* ExtentModeController.m */; };
-		343CED8E1983B77F0012B13D /* MPlayerConnector.h in Headers */ = {isa = PBXBuildFile; fileRef = 343CED721983B77F0012B13D /* MPlayerConnector.h */; };
-		343CED8F1983B77F0012B13D /* MPlayerConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CED731983B77F0012B13D /* MPlayerConnector.m */; };
+		343CED8E1983B77F0012B13D /* MPlayerController.h in Headers */ = {isa = PBXBuildFile; fileRef = 343CED721983B77F0012B13D /* MPlayerController.h */; };
+		343CED8F1983B77F0012B13D /* MPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CED731983B77F0012B13D /* MPlayerController.m */; };
 		343CED901983B77F0012B13D /* MPlayerScreenSaverX Background.png in Resources */ = {isa = PBXBuildFile; fileRef = 343CED741983B77F0012B13D /* MPlayerScreenSaverX Background.png */; };
 		343CED911983B77F0012B13D /* MPlayerScreenSaverX Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 343CED751983B77F0012B13D /* MPlayerScreenSaverX Logo.png */; };
 		343CED931983B77F0012B13D /* MPlayerScreenSaverXConfigureSheet.h in Headers */ = {isa = PBXBuildFile; fileRef = 343CED771983B77F0012B13D /* MPlayerScreenSaverXConfigureSheet.h */; };
@@ -65,8 +65,8 @@
 		343CED6E1983B77F0012B13D /* ExtentModeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtentModeController.h; sourceTree = "<group>"; };
 		343CED6F1983B77F0012B13D /* ExtentModeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtentModeController.m; sourceTree = "<group>"; };
 		343CED711983B77F0012B13D /* mplayer */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mplayer; sourceTree = "<group>"; };
-		343CED721983B77F0012B13D /* MPlayerConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPlayerConnector.h; sourceTree = "<group>"; };
-		343CED731983B77F0012B13D /* MPlayerConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = MPlayerConnector.m; sourceTree = "<group>"; tabWidth = 2; };
+		343CED721983B77F0012B13D /* MPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPlayerController.h; sourceTree = "<group>"; };
+		343CED731983B77F0012B13D /* MPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = MPlayerController.m; sourceTree = "<group>"; tabWidth = 2; };
 		343CED741983B77F0012B13D /* MPlayerScreenSaverX Background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MPlayerScreenSaverX Background.png"; sourceTree = "<group>"; };
 		343CED751983B77F0012B13D /* MPlayerScreenSaverX Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MPlayerScreenSaverX Logo.png"; sourceTree = "<group>"; };
 		343CED761983B77F0012B13D /* MPlayerScreenSaverX-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MPlayerScreenSaverX-Info.plist"; sourceTree = "<group>"; };
@@ -214,8 +214,8 @@
 			children = (
 				343CED671983B77F0012B13D /* Common.h */,
 				343CED681983B77F0012B13D /* Common.m */,
-				343CED721983B77F0012B13D /* MPlayerConnector.h */,
-				343CED731983B77F0012B13D /* MPlayerConnector.m */,
+				343CED721983B77F0012B13D /* MPlayerController.h */,
+				343CED731983B77F0012B13D /* MPlayerController.m */,
 				343CED7A1983B77F0012B13D /* MPlayerScreenSaverXView.h */,
 				343CED7B1983B77F0012B13D /* MPlayerScreenSaverXView.m */,
 				343CED7C1983B77F0012B13D /* OpenGLVideoView.h */,
@@ -265,7 +265,7 @@
 				343CED861983B77F0012B13D /* Common.h in Headers */,
 				343CED981983B77F0012B13D /* OpenGLVideoView.h in Headers */,
 				343CED8A1983B77F0012B13D /* ExtentModeController.h in Headers */,
-				343CED8E1983B77F0012B13D /* MPlayerConnector.h in Headers */,
+				343CED8E1983B77F0012B13D /* MPlayerController.h in Headers */,
 				343CEDA01983B77F0012B13D /* VideoListController.h in Headers */,
 				343CED9E1983B77F0012B13D /* VideoFrameBufferInfo.h in Headers */,
 				343CED951983B77F0012B13D /* MPlayerScreenSaverX-Prefix.pch in Headers */,
@@ -400,7 +400,7 @@
 				343CED941983B77F0012B13D /* MPlayerScreenSaverXConfigureSheet.m in Sources */,
 				343CEDA11983B77F0012B13D /* VideoListController.m in Sources */,
 				343CED9F1983B77F0012B13D /* VideoFrameBufferInfo.m in Sources */,
-				343CED8F1983B77F0012B13D /* MPlayerConnector.m in Sources */,
+				343CED8F1983B77F0012B13D /* MPlayerController.m in Sources */,
 				343CED8B1983B77F0012B13D /* ExtentModeController.m in Sources */,
 				343CED971983B77F0012B13D /* MPlayerScreenSaverXView.m in Sources */,
 				343CED9B1983B77F0012B13D /* SharedMemoryMapper.m in Sources */,
@@ -598,6 +598,7 @@
 				344CB7CD1ADC909600CFBB16 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		34DF0EFD197D5533003C9323 /* Build configuration list for PBXProject "MPlayerScreenSaverX" */ = {
 			isa = XCConfigurationList;
