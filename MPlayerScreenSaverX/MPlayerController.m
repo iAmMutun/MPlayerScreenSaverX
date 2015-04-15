@@ -31,9 +31,6 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
     sharedIdentifier = [NSString stringWithFormat:@"%@_%u", SharedIdentifierPrefixString, msSine1970];
     
     sharedBuffer = [[SharedMemoryMapper alloc] initWithName:sharedIdentifier];
-
-    mplayerTask = nil;
-    mplayerArguments = nil;
     
     NSBundle *bundle = [NSBundle bundleWithIdentifier:BundleIdentifierString];
     mplayerExcutablePath = [bundle pathForAuxiliaryExecutable:@"mplayer"];
@@ -47,7 +44,6 @@ NSString * const kVSMPlayerNoSound        = @"-nosound";
 
     DebugLog(@"Establishing service connection [%@]", sharedIdentifier);
     mplayerConnection = [NSConnection serviceConnectionWithName:sharedIdentifier rootObject:self];
-    [mplayerConnection retain];
   }
   return self;
 }

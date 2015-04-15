@@ -97,7 +97,6 @@ static MPlayerController *gMPlayerController;
     NSBundle *bundle = [NSBundle bundleWithIdentifier:BundleIdentifierString];
     DebugLog(@"%@", [bundle bundlePath]);
     [bundle loadNibNamed:@"ConfigureSheet" owner:self topLevelObjects:NULL];
-    [configureSheet retain];
   }
   [configureSheet reload];
   return configureSheet;
