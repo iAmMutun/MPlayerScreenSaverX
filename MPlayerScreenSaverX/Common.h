@@ -3,8 +3,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern void DebugLog(const NSString *format, ...);
-extern void DebugError(const NSString *format, ...);
+// static to avoid conflict
+static void (*DebugError)(const NSString*, ...) = NSLog;
+#ifdef DEBUG
+static void (*DebugLog)(const NSString*, ...) = NSLog;
+#else
+__attribute__((unused))
+static void DebugLog(const NSString* format, ...) {}
+#endif
 
 typedef void * BufferType;
 

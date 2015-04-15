@@ -1,20 +1,5 @@
 #import "Common.h"
 
-void DebugLog(const NSString *format, ...) {
-#ifdef DEBUG
-  va_list args;
-  va_start(args, format);
-  NSLogv(format, args);
-  va_end(args);
-#endif
-}
-void DebugError(const NSString *format, ...) {
-  va_list args;
-  va_start(args, format);
-  NSLogv(format, args);
-  va_end(args);
-}
-
 const ResultType ResultSuccess = 0;
 const ResultType ResultFailed  = 1;
 
