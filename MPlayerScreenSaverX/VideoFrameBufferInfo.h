@@ -5,23 +5,17 @@
 #import <Cocoa/Cocoa.h>
 
 @interface VideoFrameBufferInfo : NSObject
-{
-  BufferType  frameBuffer;
-  NSUInteger  imageWidth;
-  NSUInteger  imageHeight;
-  NSUInteger  bytesPerPixel;
-}
 
 @property (assign, readonly) BufferType frameBuffer;
 @property (assign, readonly) NSUInteger imageWidth;
 @property (assign, readonly) NSUInteger imageHeight;
 @property (assign, readonly) NSUInteger bytesPerPixel;
+@property (assign, readonly) OSType pixelFormat;
 
 - (id) initWithBuffer:(BufferType)buffer
                 width:(NSUInteger)width
                height:(NSUInteger)height
                 bytes:(NSUInteger)bytes;
-- (OSType) pixelFormat;
 
 @end
 #endif

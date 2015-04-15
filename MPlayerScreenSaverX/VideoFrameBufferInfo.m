@@ -6,6 +6,7 @@
 @synthesize imageWidth;
 @synthesize imageHeight;
 @synthesize bytesPerPixel;
+@synthesize pixelFormat;
 
 - (id) initWithBuffer:(BufferType)buffer
                 width:(NSUInteger)width
@@ -13,19 +14,19 @@
                 bytes:(NSUInteger)bytes
 {
   self = [super init];
-  if (self) {
+  if (self)
+  {
     frameBuffer = buffer;
     imageWidth = width;
     imageHeight = height;
     bytesPerPixel = bytes;
+    switch (bytesPerPixel)
+    {
+      case 2:   pixelFormat = kYUVSPixelFormat;   break;
+      case 3:   pixelFormat = k24RGBPixelFormat;  break;
+      default:  pixelFormat = k32ARGBPixelFormat; break;
+    }
   }
   return self;
-}
-- (OSType) pixelFormat {
-  switch (bytesPerPixel) {
-    case 2: return kYUVSPixelFormat;
-    case 3: return k24RGBPixelFormat;
-  }
-  return k32ARGBPixelFormat;
 }
 @end

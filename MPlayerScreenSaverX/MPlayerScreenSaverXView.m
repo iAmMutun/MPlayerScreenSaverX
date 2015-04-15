@@ -1,8 +1,22 @@
 #import "MPlayerScreenSaverXView.h"
+#import "MPlayerScreenSaverXConfigureSheet.h"
+#import "MPlayerController.h"
+#import "OpenGLVideoView.h"
 #import "VideoFrameBufferInfo.h"
 
-static int gScreens = 0;
-static MPlayerController *gMPlayerController;
+static NSUInteger gScreens = 0;
+static MPlayerController *gMPlayerController = nil;
+
+@interface MPlayerScreenSaverXView ()
+{
+  BOOL _first;
+  OpenGLVideoView   * _glView;
+  MPlayerController * _mplayerCtrlr;
+  IBOutlet MPlayerScreenSaverXConfigureSheet *sheet;
+}
+@end
+
+
 
 @implementation MPlayerScreenSaverXView
 
@@ -10,31 +24,47 @@ static MPlayerController *gMPlayerController;
           isPreview:(BOOL)isPreview
 {
   self = [super initWithFrame:frame isPreview:isPreview];
-  if (self) {
-    first = (isPreview || gScreens == 0);
+  if (self)
+  {
+    // Is this the first view?
+    _first = (isPreview || gScreens == 0);
     gScreens++;
 
-    openglView = [[OpenGLVideoView alloc] init];
+    _glView = [[OpenGLVideoView alloc] init];
     DebugLog(@"Initializing Video Saver");
     
-    ScreenSaverDefaults *userDefaults = [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
-    [userDefaults registerDefaults:@{DefaultVideoListKey: [[NSArray alloc] init],
-                                    DefaultVolumeKey: @"5",
-                                    DefaultMuteKey: @"NO",
-                                    DefaultExtentKey: FitToScreenKey,
-                                    DefaultShuffleKey: @"NO"}];
-  
-    if (first) {
-      mplayerController = [[MPlayerController alloc] init];
-      gMPlayerController = mplayerController;
-    } else {
-      mplayerController = gMPlayerController;
+    ScreenSaverDefaults *userDefaults =
+      [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
+    [userDefaults registerDefaults:@{
+      DefaultVideoListKey: [[NSArray alloc] init],
+      DefaultVolumeKey: @"5",
+      DefaultMuteKey: @"NO",
+      DefaultExtentKey: FitToScreenKey,
+      DefaultShuffleKey: @"NO"
+    }];
+
+    // Initialize only on the main screen.
+    if (_first)
+    {
+      _mplayerCtrlr = [[MPlayerController alloc] init];
+      gMPlayerController = _mplayerCtrlr;
+    }
+    else
+    {
+      _mplayerCtrlr = gMPlayerController;
     }
 
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter addObserver:self selector:@selector(videoStartRequest:) name:VideoWillStartNotification   object:mplayerController];
-    [notificationCenter addObserver:self selector:@selector(videoStopRequest:)  name:VideoHasStopNotification    object:mplayerController];
-    [notificationCenter addObserver:self selector:@selector(renderRequest:)     name:VideoWillRenderNotification  object:mplayerController];
+    // Because of the multiple views, we use notification instead of direct call.
+    NSNotificationCenter *noti = [NSNotificationCenter defaultCenter];
+    [noti addObserver:self selector:@selector(videoStartRequest:)
+                 name:VideoWillStartNotification
+               object:_mplayerCtrlr];
+    [noti addObserver:self selector:@selector(videoStopRequest:)
+                 name:VideoHasStopNotification
+               object:_mplayerCtrlr];
+    [noti addObserver:self selector:@selector(renderRequest:)
+                 name:VideoWillRenderNotification
+               object:_mplayerCtrlr];
     DebugLog(@"Initialization complete");
   }
   return self;
@@ -42,27 +72,28 @@ static MPlayerController *gMPlayerController;
 
 - (void)setFrameSize:(NSSize)newSize
 {
-  
-  [openglView setFrameSize:newSize];
+  [_glView setFrameSize:newSize];
   [super setFrameSize:newSize];
 }
 
 - (void)startAnimation
 {
-  [self addSubview:openglView];
-  if (first) {
-    [mplayerController refreshArguments];
-    [mplayerController launch];
+  [self addSubview:_glView];
+  if (_first)
+  {
+    [_mplayerCtrlr refreshArguments];
+    [_mplayerCtrlr launch];
   }
   [super startAnimation];
 }
 
 - (void)stopAnimation
 {
-  if (first) {
-    [mplayerController terminate];
+  if (_first)
+  {
+    [_mplayerCtrlr terminate];
   }
-  [openglView removeFromSuperview];
+  [_glView removeFromSuperview];
   [super stopAnimation];
   gScreens = 0;
 }
@@ -70,18 +101,18 @@ static MPlayerController *gMPlayerController;
 - (void)drawRect:(NSRect)rect
 {
   [super drawRect:rect];
-  [openglView render];
+  [_glView render];
 }
 
 - (void)videoStartRequest:(NSNotification *)aNotification
 {
   VideoFrameBufferInfo *bufferInfo = [aNotification userInfo][@"bufferInfo"];
-  [openglView prepareBuffer:bufferInfo];
+  [_glView prepareBuffer:bufferInfo];
 }
 
 - (void)videoStopRequest:(NSNotification *)aNotification
 {
-  [openglView clearBuffer];
+  [_glView clearBuffer];
 }
 
 - (void)renderRequest:(NSNotification *)aNotification
@@ -93,13 +124,14 @@ static MPlayerController *gMPlayerController;
 
 - (NSWindow*)configureSheet
 {
-  if (configureSheet == nil) {
+  if (sheet == nil)
+  {
     NSBundle *bundle = [NSBundle bundleWithIdentifier:BundleIdentifierString];
     DebugLog(@"%@", [bundle bundlePath]);
     [bundle loadNibNamed:@"ConfigureSheet" owner:self topLevelObjects:NULL];
   }
-  [configureSheet reload];
-  return configureSheet;
+  [sheet reload];
+  return sheet;
 }
 
 @end

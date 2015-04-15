@@ -5,11 +5,6 @@
 #import <Cocoa/Cocoa.h>
 
 @interface SharedMemoryMapper : NSObject
-{
-  NSString  * name;
-  BufferType  bytes;
-  NSUInteger  length;
-}
 
 @property (assign, readonly) BufferType bytes;
 

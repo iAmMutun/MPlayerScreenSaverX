@@ -2,23 +2,14 @@
 #define _OpenGLVideoView_h
 
 #import "Common.h"
-#import "VideoFrameBufferInfo.h"
 #import <Cocoa/Cocoa.h>
-#import <CoreVideo/CoreVideo.h>
+#import "VideoFrameBufferInfo.h"
 
 @interface OpenGLVideoView : NSOpenGLView
-{
-  NSSize  imageSize;
-  NSPoint textureBound;
-  CVOpenGLBufferRef       textureBuffer;
-  CVOpenGLTextureCacheRef textureCache;
-}
 
-- (id)init;
-- (BOOL)isOpaque;
 - (ResultType)prepareBuffer:(VideoFrameBufferInfo *)bufferInfo;
-- (void)clearBuffer;
 - (ResultType)render;
+- (void)clearBuffer;
 
 @end
 #endif

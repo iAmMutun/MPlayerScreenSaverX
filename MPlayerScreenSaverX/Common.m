@@ -22,12 +22,12 @@ NSString * const BundleIdentifierString       = @"th.in.iammutun.MPlayerScreenSa
 NSString * const VideoListItemTypeString      = @"th.in.iammutun.MPlayerScreenSaverX-video-list-item";
 NSString * const SharedIdentifierPrefixString = @"mpssx_shared_id";
 
-NSString * const DefaultVideoListKey    = @"Videos";
-NSString * const DefaultVideoPathKey    = @"VideoPath";
-NSString * const DefaultMuteKey         = @"Mute";
-NSString * const DefaultVolumeKey       = @"Volume";
-NSString * const DefaultExtentKey       = @"Extent";
-NSString * const DefaultShuffleKey      = @"Shuffle";
+NSString * const DefaultVideoListKey  = @"Videos";
+NSString * const DefaultVideoPathKey  = @"VideoPath";
+NSString * const DefaultMuteKey       = @"Mute";
+NSString * const DefaultVolumeKey     = @"Volume";
+NSString * const DefaultExtentKey     = @"Extent";
+NSString * const DefaultShuffleKey    = @"Shuffle";
 
 NSString * const FitToScreenKey     = @"Fit";
 NSString * const FillScreenKey      = @"Fill";
