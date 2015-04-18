@@ -3,7 +3,7 @@
 const ResultType ResultSuccess = 0;
 const ResultType ResultFailed  = 1;
 
-NSString * const BundleIdentifierString       = @"th.in.iammutun.MPlayerScreenSaverX";
+NSString * const BundleIdentifierString       = @"th.in.iammutun.MPlayerScreenSaverX-idle";
 NSString * const VideoListItemTypeString      = @"th.in.iammutun.MPlayerScreenSaverX-video-list-item";
 NSString * const SharedIdentifierPrefixString = @"mpssx_shared_id";
 
