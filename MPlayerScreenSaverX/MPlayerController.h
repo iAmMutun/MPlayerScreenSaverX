@@ -16,7 +16,7 @@
 - (void) ontop;
 @end
 
-@interface MPlayerConnector : NSObject <MPlayerOSXVOProto>
+@interface MPlayerController : NSObject <MPlayerOSXVOProto>
 
 - (id)init;
 - (void)launch;

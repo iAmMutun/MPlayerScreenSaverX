@@ -1,4 +1,4 @@
-#import "MPlayerConnector.h"
+#import "MPlayerController.h"
 #import "VideoFrameBufferInfo.h"
 #import <ScreenSaver/ScreenSaver.h>
 
@@ -21,7 +21,7 @@ NSString * const kMPlayerNoAutoSub      = @"-noautosub";
 NSString * const kMPlayerNoSub          = @"-nosub";
 NSString * const kMPlayerNoSound        = @"-nosound";
 
-@interface MPlayerConnector ()
+@interface MPlayerController ()
 {
   NSTask    * mplayerTask;
   NSPipe    * mplayerInputPipe;
@@ -48,7 +48,7 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 - (void)nextVideo;
 @end
 
-@implementation MPlayerConnector
+@implementation MPlayerController
 
 - (id)init
 {

@@ -2,7 +2,7 @@
 #import "VideoFrameBufferInfo.h"
 
 static int gScreens = 0;
-static MPlayerConnector *gMPlayerConnector;
+static MPlayerController *gMPlayerController;
 
 @implementation MPlayerScreenSaverXView
 
@@ -25,16 +25,16 @@ static MPlayerConnector *gMPlayerConnector;
                                     DefaultShuffleKey: @"NO"}];
   
     if (first) {
-      mplayerConnector = [[MPlayerConnector alloc] init];
-      gMPlayerConnector = mplayerConnector;
+      mplayerController = [[MPlayerController alloc] init];
+      gMPlayerController = mplayerController;
     } else {
-      mplayerConnector = gMPlayerConnector;
+      mplayerController = gMPlayerController;
     }
 
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter addObserver:self selector:@selector(videoStartRequest:) name:VideoWillStartNotification   object:mplayerConnector];
-    [notificationCenter addObserver:self selector:@selector(videoStopRequest:)  name:VideoHasStopNotification    object:mplayerConnector];
-    [notificationCenter addObserver:self selector:@selector(renderRequest:)     name:VideoWillRenderNotification  object:mplayerConnector];
+    [notificationCenter addObserver:self selector:@selector(videoStartRequest:) name:VideoWillStartNotification   object:mplayerController];
+    [notificationCenter addObserver:self selector:@selector(videoStopRequest:)  name:VideoHasStopNotification    object:mplayerController];
+    [notificationCenter addObserver:self selector:@selector(renderRequest:)     name:VideoWillRenderNotification  object:mplayerController];
     DebugLog(@"Initialization complete");
   }
   return self;
@@ -51,7 +51,7 @@ static MPlayerConnector *gMPlayerConnector;
 {
   [self addSubview:openglView];
   if (first) {
-    [mplayerConnector launch];
+    [mplayerController launch];
   }
   [super startAnimation];
 }
@@ -59,7 +59,7 @@ static MPlayerConnector *gMPlayerConnector;
 - (void)stopAnimation
 {
   if (first) {
-    [mplayerConnector terminate];
+    [mplayerController terminate];
   }
   [openglView removeFromSuperview];
   [super stopAnimation];
