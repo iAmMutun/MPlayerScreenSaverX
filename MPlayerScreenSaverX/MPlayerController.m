@@ -12,7 +12,7 @@ NSString * const kMPlayerNoConfigParam  = @"all";
 NSString * const kMPlayerLoop           = @"-loop";
 NSString * const kMPlayerLoopParam      = @"0";
 NSString * const kMPlayerSlave          = @"-slave";
-NSString * const kMPlayerIdle          = @"-idle";
+NSString * const kMPlayerIdle           = @"-idle";
 NSString * const kMPlayerQuiet          = @"-quiet";
 NSString * const kMPlayerVFCLR          = @"-vf-clr";
 NSString * const kMPlayerAFCLR          = @"-af-clr";
@@ -213,11 +213,11 @@ NSString * const kMPlayerNoSound        = @"-nosound";
                                               height:height
                                          bufferCount:2
                                          pixelFormat:pixelFormat];
-  NSUInteger totalBufferSize = [bufferInfo totalBufferSize];
-  ResultType result = [_sharedBuffer share:totalBufferSize];
+  NSUInteger bufferSize = [bufferInfo bufferSize];
+  ResultType result = [_sharedBuffer share:bufferSize];
   if (result == ResultSuccess)
   {
-    [bufferInfo setFrameBuffer:[_sharedBuffer bytes]];
+    [bufferInfo setBuffer:[_sharedBuffer bytes]];
     NSDictionary *info = @{@"bufferInfo": bufferInfo};
     [_notiCenter postNotificationName:VideoWillStartNotification object:self userInfo:info];
     DebugLog(@"Video has started");

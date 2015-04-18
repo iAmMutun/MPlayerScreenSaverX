@@ -57,7 +57,7 @@
   {
     result = CVPixelBufferCreateWithBytes(
                NULL, _imgSize.width, _imgSize.height,
-               [bufferInfo pixelFormat], [bufferInfo frameBuffer],
+               [bufferInfo pixelFormat], [bufferInfo frameBuffer:i],
                _imgSize.width * [bufferInfo bytesPerPixel],
                NULL, NULL, NULL, &_buffers[i]);
     if (result != kCVReturnSuccess)

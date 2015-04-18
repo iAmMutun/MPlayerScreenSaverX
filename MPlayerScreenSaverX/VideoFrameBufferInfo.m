@@ -2,7 +2,7 @@
 
 @implementation VideoFrameBufferInfo
 
-@synthesize frameBuffer;
+@synthesize buffer;
 @synthesize imageWidth;
 @synthesize imageHeight;
 @synthesize bufferCount;
@@ -16,13 +16,18 @@
   self = [super init];
   if (self)
   {
-    frameBuffer = nil;
+    buffer = nil;
     imageWidth = width;
     imageHeight = height;
     pixelFormat = format;
     bufferCount = count;
   }
   return self;
+}
+
+- (BufferType)frameBuffer:(NSUInteger)frame
+{
+  return buffer + [self frameSize] * frame;
 }
 
 - (NSUInteger)bytesPerPixel
@@ -37,13 +42,13 @@
   }
 }
 
-- (NSUInteger)bufferSize
+- (NSUInteger)frameSize
 {
   return [self bytesPerPixel] * imageWidth * imageHeight;
 }
 
-- (NSUInteger)totalBufferSize
+- (NSUInteger)bufferSize
 {
-  return [self bufferSize] * bufferCount;
+  return [self frameSize] * bufferCount;
 }
 @end
