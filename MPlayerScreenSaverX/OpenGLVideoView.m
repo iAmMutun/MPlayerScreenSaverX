@@ -127,6 +127,7 @@
     }
     free(_buffers);
     _buffers = NULL;
+    _bufferCount = 0;
   }
 }
 
