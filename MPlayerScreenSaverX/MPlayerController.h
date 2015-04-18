@@ -3,6 +3,7 @@
 
 #import "Common.h"
 #import <Cocoa/Cocoa.h>
+#import "OpenGLVideoView.h"
 
 @protocol MPlayerOSXVOProto
 
@@ -19,13 +20,10 @@
 
 @interface MPlayerController : NSObject <MPlayerOSXVOProto>
 
+- (void)addView:(OpenGLVideoView*)view;
 - (void)refreshArguments;
 - (void)launch;
 - (void)terminate;
 
 @end
-
-extern NSString * const VideoWillStartNotification;
-extern NSString * const VideoHasStopNotification;
-extern NSString * const VideoWillRenderNotification;
 #endif

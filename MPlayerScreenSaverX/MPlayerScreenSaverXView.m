@@ -54,17 +54,8 @@ static MPlayerController *gMPlayerController = nil;
       _mplayerCtrlr = gMPlayerController;
     }
 
-    // Because of the multiple views, we use notification instead of direct call.
-    NSNotificationCenter *noti = [NSNotificationCenter defaultCenter];
-    [noti addObserver:self selector:@selector(videoStartRequest:)
-                 name:VideoWillStartNotification
-               object:_mplayerCtrlr];
-    [noti addObserver:self selector:@selector(videoStopRequest:)
-                 name:VideoHasStopNotification
-               object:_mplayerCtrlr];
-    [noti addObserver:self selector:@selector(renderRequest:)
-                 name:VideoWillRenderNotification
-               object:_mplayerCtrlr];
+    [_mplayerCtrlr addView:_glView];
+
     DebugLog(@"Initialization complete");
   }
   return self;
@@ -96,28 +87,6 @@ static MPlayerController *gMPlayerController = nil;
   [_glView removeFromSuperview];
   [super stopAnimation];
   gScreens = 0;
-}
-
-- (void)drawRect:(NSRect)rect
-{
-  [super drawRect:rect];
-  [_glView render];
-}
-
-- (void)videoStartRequest:(NSNotification *)aNotification
-{
-  VideoFrameBufferInfo *bufferInfo = [aNotification userInfo][@"bufferInfo"];
-  [_glView prepareBuffer:bufferInfo];
-}
-
-- (void)videoStopRequest:(NSNotification *)aNotification
-{
-  [_glView clearBuffer];
-}
-
-- (void)renderRequest:(NSNotification *)aNotification
-{
-  [self setNeedsDisplay:YES];
 }
 
 - (BOOL)hasConfigureSheet { return YES; }
