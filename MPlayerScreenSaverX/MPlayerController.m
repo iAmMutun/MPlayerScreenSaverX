@@ -43,6 +43,8 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   NSString  * _muteParam;
   BOOL  _playFlag;
   BOOL  _shuffle;
+  NSMutableArray *_views;
+
 }
 @end
 
@@ -73,8 +75,16 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 
     DebugLog(@"Establishing service connection [%@]", _sharedId);
     _connection = [NSConnection serviceConnectionWithName:_sharedId rootObject:self];
+    
+    _views = [[NSMutableArray alloc] init];
+
   }
   return self;
+}
+
+- (void)addView:(OpenGLVideoView*)view
+{
+  [_views addObject:view];
 }
 
 - (void)refreshArguments
@@ -218,8 +228,11 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   if (result == ResultSuccess)
   {
     [bufferInfo setBuffer:[_sharedBuffer bytes]];
-    NSDictionary *info = @{@"bufferInfo": bufferInfo};
-    [_notiCenter postNotificationName:VideoWillStartNotification object:self userInfo:info];
+    [_views  enumerateObjectsUsingBlock:
+      ^(id obj, NSUInteger idx, BOOL *stop)
+    {
+      [(OpenGLVideoView*)(obj) prepareBuffer:bufferInfo];
+    }];
     DebugLog(@"Video has started");
     _playFlag = YES;
     return 0;
@@ -229,7 +242,11 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 
 - (void)stop
 {
-  [_notiCenter postNotificationName:VideoHasStopNotification object:self];
+  [_views  enumerateObjectsUsingBlock:
+    ^(id obj, NSUInteger idx, BOOL *stop)
+  {
+    [(OpenGLVideoView*)(obj) clearBuffer];
+  }];
   [_sharedBuffer unshare];
   if (_playFlag)
   {
@@ -256,8 +273,11 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 
 - (void)render:(bycopy NSUInteger)frameNum;
 {
-  NSDictionary *info = @{@"f": [NSNumber numberWithUnsignedInteger: frameNum]};
-  [_notiCenter postNotificationName:VideoWillRenderNotification object:self userInfo:info];
+  [_views  enumerateObjectsUsingBlock:
+    ^(id obj, NSUInteger idx, BOOL *stop)
+  {
+    [(OpenGLVideoView*)(obj) render:frameNum];
+  }];
 }
 
 - (void)toggleFullscreen { }
