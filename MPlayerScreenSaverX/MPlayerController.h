@@ -1,11 +1,11 @@
-#ifndef _MPlayerConnector_h
-#define _MPlayerConnector_h
+#ifndef _MPlayerController_h
+#define _MPlayerController_h
 
 #import "Common.h"
-#import "SharedMemoryMapper.h"
 #import <Cocoa/Cocoa.h>
 
 @protocol MPlayerOSXVOProto
+
 - (int) startWithWidth: (bycopy int)width
             withHeight: (bycopy int)height
              withBytes: (bycopy int)bytes
@@ -14,11 +14,11 @@
 - (void) render;
 - (void) toggleFullscreen;
 - (void) ontop;
+
 @end
 
 @interface MPlayerController : NSObject <MPlayerOSXVOProto>
 
-- (id)init;
 - (void)launch;
 - (void)terminate;
 

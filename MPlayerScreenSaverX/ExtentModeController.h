@@ -5,10 +5,6 @@
 #import <Cocoa/Cocoa.h>
 
 @interface ExtentModeController : NSArrayController
-{
-}
-
-- (void)awakeFromNib;
 
 - (NSString *)extentMode;
 - (void)setExtentMode:(NSString *)mode;

@@ -1,6 +1,18 @@
 #import "OpenGLVideoView.h"
 #import <OpenGL/gl.h>
 #import <ScreenSaver/ScreenSaver.h>
+#import <CoreVideo/CoreVideo.h>
+
+@interface OpenGLVideoView ()
+{
+  NSSize  _imgSize;
+  NSPoint _bound;
+  CVOpenGLBufferRef       _buffer;
+  CVOpenGLTextureCacheRef _cache;
+}
+@end
+
+
 
 @implementation OpenGLVideoView
 - (id)init
@@ -13,11 +25,12 @@
   NSOpenGLPixelFormat *format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
   self = [super initWithFrame:NSZeroRect pixelFormat:format];
   format = nil;
-  if (self) {
-    imageSize.width  = 0;
-    imageSize.height = 0;
-    textureBuffer = nil;
-    textureCache  = nil;
+  if (self)
+  {
+    _imgSize.width  = 0;
+    _imgSize.height = 0;
+    _buffer = nil;
+    _cache  = nil;
     glClearColor(0, 0, 0, 0);
     const GLint swapInterval = 1;
     [self.openGLContext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
@@ -31,47 +44,57 @@
 {
   DebugLog(@"Setting up OpenGL buffer");
   
-  imageSize.width   = [bufferInfo imageWidth];
-  imageSize.height  = [bufferInfo imageHeight];
+  _imgSize.width   = [bufferInfo imageWidth];
+  _imgSize.height  = [bufferInfo imageHeight];
 
-  CVReturn result = CVPixelBufferCreateWithBytes(NULL, imageSize.width, imageSize.height, [bufferInfo pixelFormat], [bufferInfo frameBuffer],
-                                                 imageSize.width * [bufferInfo bytesPerPixel], NULL, NULL, NULL, &textureBuffer);
-  if (result != kCVReturnSuccess) {
+  CVReturn result = CVPixelBufferCreateWithBytes(
+                      NULL, _imgSize.width, _imgSize.height,
+                      [bufferInfo pixelFormat], [bufferInfo frameBuffer],
+                      _imgSize.width * [bufferInfo bytesPerPixel],
+                      NULL, NULL, NULL, &_buffer);
+  if (result != kCVReturnSuccess)
+  {
     DebugError(@"Frame buffer creation failed");
     return ResultFailed;
   }
   CGLContextObj context = [self.openGLContext CGLContextObj];
-  result = CVOpenGLTextureCacheCreate(NULL, NULL, context, CGLGetPixelFormat(context), NULL, &textureCache);
-  if (result != kCVReturnSuccess) {
+  result = CVOpenGLTextureCacheCreate(NULL, NULL, context, CGLGetPixelFormat(context), NULL, &_cache);
+  if (result != kCVReturnSuccess)
+  {
     DebugError(@"Texture cache creation failed");
     return ResultFailed;
   }
 
   NSSize screenSize = [self bounds].size;
   CGFloat screenAspect = screenSize.width / screenSize.height;
-  CGFloat imageAspect = imageSize.width / imageSize.height;
+  CGFloat imageAspect = _imgSize.width / _imgSize.height;
 
-  textureBound.x = 1.0;
-  textureBound.y = 1.0;
+  _bound.x = 1.0;
+  _bound.y = 1.0;
 
   ScreenSaverDefaults *userDefaults = [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
   NSString *extentMode = [userDefaults stringForKey:DefaultExtentKey];
 
   DebugLog(@"Extent mode: %@", extentMode);
 
-  if([extentMode isEqualToString:FitToScreenKey]) {
+  if([extentMode isEqualToString:FitToScreenKey])
+  {
     if (imageAspect > screenAspect)
-      textureBound.y = screenAspect / imageAspect;
+      _bound.y = screenAspect / imageAspect;
     else if (imageAspect < screenAspect)
-      textureBound.x = imageAspect / screenAspect;
-  } else if ([extentMode isEqualToString:FillScreenKey]) {
+      _bound.x = imageAspect / screenAspect;
+  }
+  else if ([extentMode isEqualToString:FillScreenKey])
+  {
     if (imageAspect > screenAspect)
-      textureBound.x = imageAspect / screenAspect;
+      _bound.x = imageAspect / screenAspect;
     else if (imageAspect < screenAspect)
-      textureBound.y = screenAspect / imageAspect ;
-  } else if ([extentMode isEqualToString:CenterToScreenKey]) {
-    textureBound.x = imageSize.width  / screenSize.width;
-    textureBound.y = imageSize.height / screenSize.height;
+      _bound.y = screenAspect / imageAspect ;
+  }
+  else if ([extentMode isEqualToString:CenterToScreenKey])
+  {
+    _bound.x = _imgSize.width  / screenSize.width;
+    _bound.y = _imgSize.height / screenSize.height;
   }
 
   return ResultSuccess;
@@ -80,13 +103,15 @@
 - (void)clearBuffer
 {
   DebugLog(@"Cleaning up OpenGL buffer");
-  if (textureCache) {
-    CVOpenGLTextureCacheRelease(textureCache);
-    textureCache = NULL;
+  if (_cache)
+  {
+    CVOpenGLTextureCacheRelease(_cache);
+    _cache = NULL;
   }
-  if (textureBuffer) {
-    CVOpenGLBufferRelease(textureBuffer);
-    textureBuffer = NULL;
+  if (_buffer)
+  {
+    CVOpenGLBufferRelease(_buffer);
+    _buffer = NULL;
   }
 }
 
@@ -94,10 +119,12 @@
 {
   [self.openGLContext makeCurrentContext];
   glClear(GL_COLOR_BUFFER_BIT);
-  if (textureBuffer) {
+  if (_buffer)
+  {
     CVOpenGLTextureRef texture;
-    CVReturn result = CVOpenGLTextureCacheCreateTextureFromImage(NULL, textureCache, textureBuffer, NULL, &texture);
-    if (result != kCVReturnSuccess) {
+    CVReturn result = CVOpenGLTextureCacheCreateTextureFromImage(NULL, _cache, _buffer, NULL, &texture);
+    if (result != kCVReturnSuccess)
+    {
       [self.openGLContext flushBuffer];
       return ResultFailed;
     }
@@ -107,10 +134,10 @@
     glBindTexture(target, CVOpenGLTextureGetName(texture));
 
     glBegin(GL_QUADS);
-    glTexCoord2f(              0,                0); glVertex2f(-textureBound.x,  textureBound.y);
-    glTexCoord2f(              0, imageSize.height); glVertex2f(-textureBound.x, -textureBound.y);
-    glTexCoord2f(imageSize.width, imageSize.height); glVertex2f( textureBound.x, -textureBound.y);
-    glTexCoord2f(imageSize.width,                0); glVertex2f( textureBound.x,  textureBound.y);
+    glTexCoord2f(              0,                0); glVertex2f(-_bound.x,  _bound.y);
+    glTexCoord2f(              0, _imgSize.height); glVertex2f(-_bound.x, -_bound.y);
+    glTexCoord2f(_imgSize.width, _imgSize.height); glVertex2f( _bound.x, -_bound.y);
+    glTexCoord2f(_imgSize.width,                0); glVertex2f( _bound.x,  _bound.y);
     glEnd();
 
     glDisable(target);

@@ -1,5 +1,13 @@
 #import "VideoListController.h"
 
+@interface VideoListController ()
+{
+  IBOutlet NSTableView* tableView;
+}
+@end
+
+
+
 @implementation VideoListController
 
 - (void) awakeFromNib
@@ -54,11 +62,12 @@
 {
   [aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
 
-  if ([info draggingSource] == aTableView) {
+  if ([info draggingSource] == aTableView)
+  {
     return  NSDragOperationMove;
-    
-  } else {
-    
+  }
+  else
+  {
     NSPasteboard* pboard = [info draggingPasteboard];
     NSArray* urls = [pboard propertyListForType:NSFilenamesPboardType];
     if ([urls count] > 0)
@@ -75,14 +84,18 @@
   
   NSPasteboard* pboard = [info draggingPasteboard];
 
-  if ([info draggingSource] == aTableView) {
+  if ([info draggingSource] == aTableView)
+  {
     NSArray *rows = [pboard propertyListForType:VideoListItemTypeString];
     NSIndexSet *indexSet = [self indexSetFromRows:rows];
     [self moveFromIndexes:indexSet toIndex:row];
     return YES;
-  } else {
+  }
+  else
+  {
     NSArray* files = [pboard propertyListForType:NSFilenamesPboardType];
-    if ([files count] > 0) {
+    if ([files count] > 0)
+    {
       [self dropFiles:files atIndex:row];
       return YES;
     }
@@ -94,7 +107,9 @@
 - (NSIndexSet *)indexSetFromRows:(NSArray *)rows
 {
   NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
-  [rows enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+  [rows enumerateObjectsUsingBlock:
+    ^(id obj, NSUInteger idx, BOOL *stop)
+  {
     [indexSet addIndex:[obj intValue]];
   }];
   return indexSet;
@@ -103,7 +118,9 @@
 - (NSArray *)rowsFromIndexSet:(NSIndexSet *)indexSet
 {
   NSMutableArray *rows = [NSMutableArray array];
-  [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+  [indexSet enumerateIndexesUsingBlock:
+    ^(NSUInteger idx, BOOL *stop)
+  {
     [rows addObject:@(idx)];
   }];
   return rows;
@@ -112,7 +129,9 @@
 - (void)moveFromIndexes:(NSIndexSet *)indexSet toIndex:(NSUInteger)index
 {
   __block NSUInteger above = 0;
-  [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+  [indexSet enumerateIndexesUsingBlock:
+    ^(NSUInteger idx, BOOL *stop)
+  {
     if (idx < index)
       above++;
   }];
@@ -124,7 +143,9 @@
 - (void)dropFiles:(NSArray *)files atIndex:(NSUInteger)index
 {
   NSMutableArray *videos = [NSMutableArray array];
-  [files enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+  [files enumerateObjectsUsingBlock:
+    ^(id obj, NSUInteger idx, BOOL *stop)
+  {
     NSString* path = obj;
     [videos addObject:@{DefaultVideoPathKey: path}];
   }];

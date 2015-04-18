@@ -10,7 +10,9 @@
   NSString *file = [bundle pathForResource:@"Extent" ofType:@"strings"];
   NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:file];
 
-  [keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+  [keys enumerateObjectsUsingBlock:
+    ^(id obj, NSUInteger idx, BOOL *stop)
+  {
     NSString *key = (NSString *)obj;
     NSString *label = dict[key];
     if (label == nil)
@@ -19,13 +21,18 @@
   }];
 }
 
-- (NSString *)extentMode {
+- (NSString *)extentMode
+{
   return [(NSDictionary*)[self selection] valueForKey:@"Key"];
 }
 
-- (void)setExtentMode:(NSString *) mode {
-  [[self arrangedObjects] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-    if ([mode compare:[(NSDictionary*)obj valueForKey:@"Key"]] == NSOrderedSame) {
+- (void)setExtentMode:(NSString *) mode
+{
+  [[self arrangedObjects] enumerateObjectsUsingBlock:
+    ^(id obj, NSUInteger idx, BOOL *stop)
+  {
+    if ([mode compare:[(NSDictionary*)obj valueForKey:@"Key"]] == NSOrderedSame)
+    {
       [self setSelectionIndex:idx];
       *stop = YES;
     }
