@@ -6,16 +6,19 @@
 
 @interface VideoFrameBufferInfo : NSObject
 
-@property (assign, readonly) BufferType frameBuffer;
-@property (assign, readonly) NSUInteger imageWidth;
-@property (assign, readonly) NSUInteger imageHeight;
-@property (assign, readonly) NSUInteger bytesPerPixel;
-@property (assign, readonly) OSType pixelFormat;
+@property (assign) BufferType frameBuffer;
+@property (assign) NSUInteger imageWidth;
+@property (assign) NSUInteger imageHeight;
+@property (assign) NSUInteger bufferCount;
+@property (assign) OSType pixelFormat;
 
-- (id) initWithBuffer:(BufferType)buffer
-                width:(NSUInteger)width
+- (id) initWithWidth:(NSUInteger)width
                height:(NSUInteger)height
-                bytes:(NSUInteger)bytes;
+          bufferCount:(NSUInteger)count
+         pixelFormat:(OSType)format;
+- (NSUInteger)bytesPerPixel;
+- (NSUInteger)bufferSize;
+- (NSUInteger)totalBufferSize;
 
 @end
 #endif

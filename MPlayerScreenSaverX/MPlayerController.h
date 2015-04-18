@@ -6,12 +6,12 @@
 
 @protocol MPlayerOSXVOProto
 
-- (int) startWithWidth: (bycopy int)width
-            withHeight: (bycopy int)height
-             withBytes: (bycopy int)bytes
-            withAspect: (bycopy int)aspect;
+- (int) startWithWidth:(bycopy NSUInteger)width
+            withHeight:(bycopy NSUInteger)height
+       withPixelFormat:(bycopy OSType)pixelFormat
+            withAspect:(bycopy float)aspect;
 - (void) stop;
-- (void) render;
+- (void) render:(bycopy NSUInteger)frameNum;
 - (void) toggleFullscreen;
 - (void) ontop;
 

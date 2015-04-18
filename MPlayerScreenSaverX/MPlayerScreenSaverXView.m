@@ -100,7 +100,6 @@ static MPlayerController *gMPlayerController = nil;
 - (void)drawRect:(NSRect)rect
 {
   [super drawRect:rect];
-  [_glView render];
 }
 
 - (void)videoStartRequest:(NSNotification *)aNotification
@@ -116,6 +115,9 @@ static MPlayerController *gMPlayerController = nil;
 
 - (void)renderRequest:(NSNotification *)aNotification
 {
+  NSNumber* num = [aNotification userInfo][@"f"];
+  NSUInteger frame = [num unsignedIntegerValue];
+  [_glView render:frame];
   [self setNeedsDisplay:YES];
 }
 

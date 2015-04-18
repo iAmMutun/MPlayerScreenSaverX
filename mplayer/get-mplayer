@@ -19,22 +19,6 @@ if [ "$download" = true ]; then
   fi
 fi
 
-cd $src_directory
-
-cv_file='libvo/vo_corevideo.m'
-gl_line='#include <OpenGL/gl.h>'
-find_result=`grep "$gl_line" "$cv_file"`
-
-echo "Patching $cv_file."
-if [ "$find_result" == "" ]; then
-  csv_line='#include <CoreServices/CoreServices.h>'
-  find_result=`cat -n "$cv_file" | grep "$csv_line" | cut -f 1`
-  line_num=`expr $find_result + 1`
-  sed -i '' "${line_num}i\\
-$gl_line
-" $cv_file
-
-else
-  echo "Already patched."
-fi
+echo "Patching vo_corevideo.h and vo_corevideo.m."
+cp -f vo_corevideo.h vo_corevideo.m $src_directory/libvo/
 

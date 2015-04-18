@@ -180,6 +180,7 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 
 - (void)mplayerHasQuit:(NSNotification *)aNotification
 {
+  DebugError(@"MPlayer has crashed");
   [_notiCenter removeObserver:self name:NSTaskDidTerminateNotification object:_task];
   [_outputThread cancel];
 }
@@ -201,19 +202,22 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   [fh writeData:[cmd dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
-- (int)startWithWidth:(bycopy int)width
-           withHeight:(bycopy int)height
-            withBytes:(bycopy int)bytes
-           withAspect:(bycopy int)aspect
+- (int)startWithWidth:(bycopy NSUInteger)width
+           withHeight:(bycopy NSUInteger)height
+      withPixelFormat:(bycopy OSType)pixelFormat
+           withAspect:(bycopy float)aspect
 {
   DebugLog(@"Receiving message from MPlayer");
-  NSUInteger bufferSize = bytes * width * height;
-  ResultType result = [_sharedBuffer share:bufferSize];
+  VideoFrameBufferInfo *bufferInfo = [[VideoFrameBufferInfo alloc]
+                                       initWithWidth:width
+                                              height:height
+                                         bufferCount:2
+                                         pixelFormat:pixelFormat];
+  NSUInteger totalBufferSize = [bufferInfo totalBufferSize];
+  ResultType result = [_sharedBuffer share:totalBufferSize];
   if (result == ResultSuccess)
   {
-    VideoFrameBufferInfo *bufferInfo = [[VideoFrameBufferInfo alloc]
-                                        initWithBuffer:[_sharedBuffer bytes]
-                                        width:width height:height bytes:bytes];
+    [bufferInfo setFrameBuffer:[_sharedBuffer bytes]];
     NSDictionary *info = @{@"bufferInfo": bufferInfo};
     [_notiCenter postNotificationName:VideoWillStartNotification object:self userInfo:info];
     DebugLog(@"Video has started");
@@ -250,9 +254,10 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   [self nextVideo];
 }
 
-- (void)render
+- (void)render:(bycopy NSUInteger)frameNum;
 {
-  [_notiCenter postNotificationName:VideoWillRenderNotification object:self];
+  NSDictionary *info = @{@"f": [NSNumber numberWithUnsignedInteger: frameNum]};
+  [_notiCenter postNotificationName:VideoWillRenderNotification object:self userInfo:info];
 }
 
 - (void)toggleFullscreen { }
