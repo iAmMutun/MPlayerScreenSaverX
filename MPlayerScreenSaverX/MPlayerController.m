@@ -3,10 +3,6 @@
 #import "VideoFrameBufferInfo.h"
 #import <ScreenSaver/ScreenSaver.h>
 
-NSString * const VideoWillStartNotification   = @"VideoWillStartNotification";
-NSString * const VideoHasStopNotification     = @"VideoHasStopNotification";
-NSString * const VideoWillRenderNotification  = @"VideoWillRenderNotification";
-
 NSString * const kMPlayerNoConfig       = @"-noconfig";
 NSString * const kMPlayerNoConfigParam  = @"all";
 NSString * const kMPlayerLoop           = @"-loop";
@@ -44,7 +40,6 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   BOOL  _playFlag;
   BOOL  _shuffle;
   NSMutableArray *_views;
-
 }
 @end
 
