@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ ! -d "MPlayer-1.1.1" ]; then
+  echo "Run './get-mplayer' to get the mplayer source code."
+  exit 1
+fi
 cd MPlayer-1.1.1
 ./configure --cc="clang" \
     --disable-mencoder \
