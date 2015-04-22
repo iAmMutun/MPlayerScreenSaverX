@@ -24,7 +24,6 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   NSTask    * _task;
   NSPipe    * _inputPipe;
   NSPipe    * _outputPipe;
-  NSThread  * _outputThread;
   NSString  * _execPath;
   NSConnection    * _connection;
   NSMutableArray  * _args;
@@ -37,6 +36,7 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   NSString  * _voParam;
   NSString  * _volumeParam;
   NSString  * _muteParam;
+  BOOL  _loadFlag;
   BOOL  _playFlag;
   BOOL  _shuffle;
   NSMutableArray *_views;
@@ -131,18 +131,20 @@ NSString * const kMPlayerNoSound        = @"-nosound";
     return;
   }
 
-  _playFlag = NO;
+  _loadFlag = NO;
   _inputPipe = [[NSPipe alloc] init];
   _outputPipe = [[NSPipe alloc] init];
-  _outputThread = [[NSThread alloc]
-                         initWithTarget:self
-                         selector:@selector(analyzeMPlayerOutput:)
-                         object:[_outputPipe fileHandleForReading]];
-  [_outputThread start];
+  NSFileHandle *outputHandle = [_outputPipe fileHandleForReading];
+  [_notiCenter addObserver:self
+                  selector:@selector(mplayerOutput:)
+                      name:NSFileHandleDataAvailableNotification
+                    object:outputHandle];
+  [outputHandle waitForDataInBackgroundAndNotify];
   _task = [[NSTask alloc] init];
-  [_notiCenter addObserver:self selector:@selector(mplayerHasQuit:)
-                             name:NSTaskDidTerminateNotification
-                           object:_task];
+  [_notiCenter addObserver:self
+                  selector:@selector(mplayerHasQuit:)
+                      name:NSTaskDidTerminateNotification
+                    object:_task];
   [_task setLaunchPath:_execPath];
   [_task setEnvironment:_envs];
   [_task setArguments:_args];
@@ -158,36 +160,47 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 {
   if ([_task isRunning])
   {
-    [_notiCenter removeObserver:self name:NSTaskDidTerminateNotification object:_task];
+    [_notiCenter removeObserver:self
+                           name:NSTaskDidTerminateNotification
+                         object:_task];
     [_task terminate];
     [_task waitUntilExit];
-    [_outputThread cancel];
+    [_notiCenter removeObserver:self
+                           name:NSFileHandleDataAvailableNotification
+                         object:[_outputPipe fileHandleForReading]];
     _task = nil;
-    _outputThread = nil;
+    _inputPipe = nil;
     _outputPipe = nil;
     DebugLog(@"MPlayer has stopped normally");
   }
 }
 
-- (void)analyzeMPlayerOutput:(NSFileHandle *)outputHandle
+- (void)mplayerOutput:(NSNotification *)aNotification
 {
-  while (![[NSThread currentThread] isCancelled])
+  NSFileHandle *outputHandle = [aNotification object];
+  NSData *data = [outputHandle availableData];
+  NSString *message = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+  DebugLog(@"> %@", message);
+  if (_loadFlag && [message containsString:@"ANS_path="])
   {
-    NSData *data = [outputHandle availableData];
-    if ([data length] > 0)
+    _loadFlag = NO;
+    if([message containsString:@"ANS_path=(null)"])
     {
-      NSString *message = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-      DebugLog(@"* %@", message);
+      [self stop];
     }
-    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate date]];
   }
+  [outputHandle waitForDataInBackgroundAndNotify];
 }
 
 - (void)mplayerHasQuit:(NSNotification *)aNotification
 {
   DebugError(@"MPlayer has crashed");
-  [_notiCenter removeObserver:self name:NSTaskDidTerminateNotification object:_task];
-  [_outputThread cancel];
+  [_notiCenter removeObserver:self
+                         name:NSTaskDidTerminateNotification
+                       object:_task];
+  [_notiCenter removeObserver:self
+                         name:NSFileHandleDataAvailableNotification
+                       object:[_outputPipe fileHandleForReading]];
 }
 
 - (void)nextVideo
@@ -203,8 +216,16 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   [_videosQueue removeObjectAtIndex:0];
   NSString *videoPath = [_currentVideo valueForKey:DefaultVideoPathKey];
   NSString *cmd = [NSString stringWithFormat:@"loadfile \"%@\" 1\n", videoPath];
+  [self writeToMPlayer:cmd];
+  [self writeToMPlayer:@"get_property path\n"];
+  _loadFlag = YES;
+}
+
+- (void)writeToMPlayer:(NSString *)cmd
+{
   NSFileHandle *fh = [_inputPipe fileHandleForWriting];
   [fh writeData:[cmd dataUsingEncoding:NSUTF8StringEncoding]];
+  DebugLog(@"< %@", cmd);
 }
 
 - (int)startWithWidth:(bycopy NSUInteger)width
@@ -237,15 +258,17 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 
 - (void)stop
 {
-  [_views  enumerateObjectsUsingBlock:
-    ^(id obj, NSUInteger idx, BOOL *stop)
-  {
-    [(OpenGLVideoView*)(obj) clearBuffer];
-  }];
-  [_sharedBuffer unshare];
   if (_playFlag)
   {
+    [_views  enumerateObjectsUsingBlock:
+      ^(id obj, NSUInteger idx, BOOL *stop)
+    {
+      [(OpenGLVideoView*)(obj) clearBuffer];
+    }];
+
+    [_sharedBuffer unshare];
     DebugLog(@"Video has stopped");
+    
     if (_shuffle && arc4random_uniform(2) == 0)
     {
       NSUInteger lowerBound = MIN(1, [_videosQueue count]);
@@ -261,7 +284,7 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   }
   else
   {
-    DebugError(@"MPlayer can't play the video [%@]", [_currentVideo valueForKey:DefaultVideoPathKey]);
+    DebugError(@"MPlayer can't play the file [%@]", [_currentVideo valueForKey:DefaultVideoPathKey]);
   }
   [self nextVideo];
 }
