@@ -179,6 +179,8 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 {
   NSFileHandle *outputHandle = [aNotification object];
   NSData *data = [outputHandle availableData];
+  if ([data length] == 0)
+    return;
   NSString *message = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
   DebugLog(@"> %@", message);
   if (_loadFlag && [message containsString:@"ANS_path="])
