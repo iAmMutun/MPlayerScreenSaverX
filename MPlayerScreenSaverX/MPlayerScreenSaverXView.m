@@ -72,7 +72,6 @@ static MPlayerController *gMPlayerController = nil;
   [self addSubview:_glView];
   if (_first)
   {
-    [_mplayerCtrlr refreshArguments];
     [_mplayerCtrlr launch];
   }
   [super startAnimation];

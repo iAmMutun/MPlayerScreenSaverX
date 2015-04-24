@@ -7,7 +7,8 @@
 {
   NSSize  _imgSize;
   NSPoint _bound;
-  CVOpenGLBufferRef       _buffer;
+  NSUInteger _bufferCount;
+  CVOpenGLBufferRef     * _buffers;
   CVOpenGLTextureCacheRef _cache;
 }
 @end
@@ -22,18 +23,20 @@
     NSOpenGLPFAAccelerated, NSOpenGLPFADoubleBuffer,
     NSOpenGLPFABackingStore, NO,
     NSOpenGLPFAMaximumPolicy, 0};
-  NSOpenGLPixelFormat *format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
+  NSOpenGLPixelFormat *format =
+    [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
   self = [super initWithFrame:NSZeroRect pixelFormat:format];
   format = nil;
   if (self)
   {
     _imgSize.width  = 0;
     _imgSize.height = 0;
-    _buffer = nil;
+    _buffers = nil;
     _cache  = nil;
     glClearColor(0, 0, 0, 0);
     const GLint swapInterval = 1;
-    [self.openGLContext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
+    [self.openGLContext setValues:&swapInterval
+                     forParameter:NSOpenGLCPSwapInterval];
   }
   return self;
 }
@@ -46,19 +49,26 @@
   
   _imgSize.width   = [bufferInfo imageWidth];
   _imgSize.height  = [bufferInfo imageHeight];
-
-  CVReturn result = CVPixelBufferCreateWithBytes(
-                      NULL, _imgSize.width, _imgSize.height,
-                      [bufferInfo pixelFormat], [bufferInfo frameBuffer],
-                      _imgSize.width * [bufferInfo bytesPerPixel],
-                      NULL, NULL, NULL, &_buffer);
-  if (result != kCVReturnSuccess)
+  
+  _buffers = malloc([bufferInfo bufferCount] * sizeof(CVOpenGLBufferRef));
+  CVReturn result;
+  _bufferCount = [bufferInfo bufferCount];
+  for (NSUInteger i = 0; i < _bufferCount; i++)
   {
-    DebugError(@"Frame buffer creation failed");
-    return ResultFailed;
+    result = CVPixelBufferCreateWithBytes(
+               NULL, _imgSize.width, _imgSize.height,
+               [bufferInfo pixelFormat], [bufferInfo frameBuffer:i],
+               _imgSize.width * [bufferInfo bytesPerPixel],
+               NULL, NULL, NULL, &_buffers[i]);
+    if (result != kCVReturnSuccess)
+    {
+      DebugError(@"Frame buffer creation failed");
+      return ResultFailed;
+    }
   }
   CGLContextObj context = [self.openGLContext CGLContextObj];
-  result = CVOpenGLTextureCacheCreate(NULL, NULL, context, CGLGetPixelFormat(context), NULL, &_cache);
+  result = CVOpenGLTextureCacheCreate(NULL, NULL, context,
+             CGLGetPixelFormat(context), NULL, &_cache);
   if (result != kCVReturnSuccess)
   {
     DebugError(@"Texture cache creation failed");
@@ -72,7 +82,8 @@
   _bound.x = 1.0;
   _bound.y = 1.0;
 
-  ScreenSaverDefaults *userDefaults = [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
+  ScreenSaverDefaults *userDefaults =
+    [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
   NSString *extentMode = [userDefaults stringForKey:DefaultExtentKey];
 
   DebugLog(@"Extent mode: %@", extentMode);
@@ -108,21 +119,27 @@
     CVOpenGLTextureCacheRelease(_cache);
     _cache = NULL;
   }
-  if (_buffer)
+  if (_buffers)
   {
-    CVOpenGLBufferRelease(_buffer);
-    _buffer = NULL;
+    for (NSUInteger i = 0; i < _bufferCount; i++)
+    {
+      CVOpenGLBufferRelease(_buffers[i]);
+    }
+    free(_buffers);
+    _buffers = NULL;
+    _bufferCount = 0;
   }
 }
 
-- (ResultType)render
+- (ResultType)render:(NSUInteger)frame
 {
   [self.openGLContext makeCurrentContext];
   glClear(GL_COLOR_BUFFER_BIT);
-  if (_buffer)
+  if (frame < _bufferCount && _buffers[frame])
   {
     CVOpenGLTextureRef texture;
-    CVReturn result = CVOpenGLTextureCacheCreateTextureFromImage(NULL, _cache, _buffer, NULL, &texture);
+    CVReturn result = CVOpenGLTextureCacheCreateTextureFromImage(
+                        NULL, _cache, _buffers[frame], NULL, &texture);
     if (result != kCVReturnSuccess)
     {
       [self.openGLContext flushBuffer];
@@ -134,10 +151,10 @@
     glBindTexture(target, CVOpenGLTextureGetName(texture));
 
     glBegin(GL_QUADS);
-    glTexCoord2f(              0,                0); glVertex2f(-_bound.x,  _bound.y);
-    glTexCoord2f(              0, _imgSize.height); glVertex2f(-_bound.x, -_bound.y);
+    glTexCoord2f(             0,               0); glVertex2f(-_bound.x,  _bound.y);
+    glTexCoord2f(             0, _imgSize.height); glVertex2f(-_bound.x, -_bound.y);
     glTexCoord2f(_imgSize.width, _imgSize.height); glVertex2f( _bound.x, -_bound.y);
-    glTexCoord2f(_imgSize.width,                0); glVertex2f( _bound.x,  _bound.y);
+    glTexCoord2f(_imgSize.width,               0); glVertex2f( _bound.x,  _bound.y);
     glEnd();
 
     glDisable(target);

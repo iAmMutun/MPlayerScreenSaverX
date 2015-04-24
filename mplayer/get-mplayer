@@ -1,40 +1,59 @@
 #!/bin/bash
-download_url='ftp://ftp.mplayerhq.hu/MPlayer/releases/MPlayer-1.1.1.tar.xz'
+download_url="ftp://ftp.mplayerhq.hu/MPlayer/releases/MPlayer-1.1.1.tar.xz"
 src_directory=`basename $download_url .tar.xz`
 
 download=true
 if [ -d "$src_directory" ]; then
-  read -p "Source code directory already exists. Download again?" yn
+  read -p "Source code directory already exists. Download again? [y/n]" yn
   if [ "$yn" != "y" ]; then
     download=false
   fi
 fi
 
 if [ "$download" = true ]; then
-  echo "Downloading source code."
-  curl -sS $download_url | tar -xvf -
+  echo "Downloading mplayer source code."
+  curl -sS "$download_url" | tar -xvf -
   if [ ! -d "$src_directory" ]; then
-    echo "Download failed."
+    echo "Download failed." >&2
     exit 1
+  fi
+else
+  read -p "Patch the driver files? [y/n]" yn
+  if [ "$yn" != "y" ]; then
+    echo "Nothing to be done."
+    exit 0;
   fi
 fi
 
-cd $src_directory
+libvo_url="https://raw.githubusercontent.com/niltsh/mplayer-for-MPlayerX/a8e911716d0362500f3455f30f2d7b2129164e6b/libvo"
+cv_m_file="vo_corevideo.m"
+cv_h_file="vo_corevideo.h"
 
-cv_file='libvo/vo_corevideo.m'
-gl_line='#include <OpenGL/gl.h>'
-find_result=`grep "$gl_line" "$cv_file"`
+patchfail()
+{
+    echo "Driver patching failed." >&2
+    exit 1
+}
 
-echo "Patching $cv_file."
-if [ "$find_result" == "" ]; then
-  csv_line='#include <CoreServices/CoreServices.h>'
-  find_result=`cat -n "$cv_file" | grep "$csv_line" | cut -f 1`
-  line_num=`expr $find_result + 1`
-  sed -i '' "${line_num}i\\
+trap 'patchfail' 0
+set -e
+
+echo "Downloading $cv_m_file and $cv_h_file."
+curl -sS "$libvo_url/$cv_m_file" > $cv_m_file
+curl -sS "$libvo_url/$cv_h_file" > $cv_h_file
+
+echo "Patching $cv_m_file."
+gl_line="#include <OpenGL/gl.h>"
+csv_line="#include <CoreServices/CoreServices.h>"
+find_result=`cat -n "$cv_m_file" | grep "$csv_line" | cut -f 1`
+line_num=`expr $find_result + 1`
+sed -i "" "${line_num}i\\
 $gl_line
-" $cv_file
+" "$cv_m_file"
+mv "$cv_m_file" "$cv_h_file" "$src_directory/libvo/"
 
-else
-  echo "Already patched."
-fi
+set +e
+trap : 0
+
+echo "Run './configure' to use preset configuration for building mplayer."
 

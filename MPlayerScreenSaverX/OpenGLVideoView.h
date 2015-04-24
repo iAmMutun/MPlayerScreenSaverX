@@ -8,7 +8,7 @@
 @interface OpenGLVideoView : NSOpenGLView
 
 - (ResultType)prepareBuffer:(VideoFrameBufferInfo *)bufferInfo;
-- (ResultType)render;
+- (ResultType)render:(NSUInteger)frame;
 - (void)clearBuffer;
 
 @end
