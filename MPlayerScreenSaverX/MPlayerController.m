@@ -27,14 +27,10 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   NSConnection    * _connection;
   NSMutableArray  * _args;
   NSMutableDictionary   * _envs;
-  NSNotificationCenter  * _notiCenter;
   SharedMemoryMapper  * _sharedBuffer;
   NSString        * _sharedId;
   NSMutableArray  * _videosQueue;
   NSDictionary    * _currentVideo;
-  NSString  * _voParam;
-  NSString  * _volumeParam;
-  NSString  * _muteParam;
   BOOL  _playFlag;
   BOOL  _shuffle;
   NSMutableArray *_views;
@@ -64,8 +60,6 @@ NSString * const kMPlayerNoSound        = @"-nosound";
     _envs = [[[NSProcessInfo processInfo] environment] mutableCopy];
     _envs[@"TERM"] = @"xterm";
 
-    _notiCenter = [NSNotificationCenter defaultCenter];
-
     DebugLog(@"Establishing service connection [%@]", _sharedId);
     _connection = [NSConnection serviceConnectionWithName:_sharedId rootObject:self];
     
@@ -85,13 +79,12 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   DebugLog(@"Loading options");
 
   ScreenSaverDefaults *defaults = [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
-  _videosQueue = [[NSMutableArray alloc] initWithArray:[defaults valueForKey:DefaultVideoListKey]];
-  _voParam = [NSString stringWithFormat:@"%@%@", kMPlayerVOParam, _sharedId];
-  _volumeParam = [defaults stringForKey:DefaultVolumeKey];
-  BOOL mute = [defaults boolForKey:DefaultMuteKey];
-  _muteParam = (mute ? kMPlayerNoSound : nil);
 
-  DebugLog(@"Volume: %@", _volumeParam);
+  NSString *voParam = [NSString stringWithFormat:@"%@%@", kMPlayerVOParam, _sharedId];
+  NSString *volumeParam = [defaults stringForKey:DefaultVolumeKey];
+  BOOL mute = [defaults boolForKey:DefaultMuteKey];
+
+  DebugLog(@"Volume: %@", volumeParam);
   DebugLog(@"Mute: %@", (mute ? @"Muted" : @"Not muted"));
   
   _args = [[NSMutableArray alloc] initWithObjects:
@@ -99,12 +92,13 @@ NSString * const kMPlayerNoSound        = @"-nosound";
                       kMPlayerSlave, kMPlayerQuiet,
                       kMPlayerVFCLR, kMPlayerAFCLR,
                       kMPlayerNoAutoSub, kMPlayerNoSub,
-                      kMPlayerVO, _voParam,
-                      kMPlayerVolume, _volumeParam,
+                      kMPlayerVO, voParam,
+                      kMPlayerVolume, volumeParam,
                       nil];
-  if (_muteParam != nil)
-    [_args addObject:_muteParam];
+  if (mute)
+    [_args addObject:kMPlayerNoSound];
   
+  _videosQueue = [[NSMutableArray alloc] initWithArray:[defaults valueForKey:DefaultVideoListKey]];
   _shuffle = [defaults boolForKey:DefaultShuffleKey];
   if (_shuffle)
   {
@@ -128,6 +122,8 @@ NSString * const kMPlayerNoSound        = @"-nosound";
     return;
   }
 
+  NSNotificationCenter *notiCenter = [NSNotificationCenter defaultCenter];
+  
   NSMutableArray *arguments = [NSMutableArray arrayWithArray:_args];
   _currentVideo = _videosQueue[0];
   [_videosQueue removeObjectAtIndex:0];
@@ -142,7 +138,7 @@ NSString * const kMPlayerNoSound        = @"-nosound";
                          object:[_outputPipe fileHandleForReading]];
   [_outputThread start];
   _task = [[NSTask alloc] init];
-  [_notiCenter addObserver:self selector:@selector(mplayerHasQuit:)
+  [notiCenter addObserver:self selector:@selector(mplayerHasQuit:)
                              name:NSTaskDidTerminateNotification
                            object:_task];
   [_task setLaunchPath:_execPath];
@@ -158,7 +154,8 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 {
   if ([_task isRunning])
   {
-    [_notiCenter removeObserver:self name:NSTaskDidTerminateNotification object:_task];
+    NSNotificationCenter *notiCenter = [NSNotificationCenter defaultCenter];
+    [notiCenter removeObserver:self name:NSTaskDidTerminateNotification object:_task];
     [_task terminate];
     [_task waitUntilExit];
     [_outputThread cancel];
@@ -185,7 +182,8 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 
 - (void)mplayerHasQuit:(NSNotification *)aNotification
 {
-  [_notiCenter removeObserver:self name:NSTaskDidTerminateNotification object:_task];
+  NSNotificationCenter *notiCenter = [NSNotificationCenter defaultCenter];
+  [notiCenter removeObserver:self name:NSTaskDidTerminateNotification object:_task];
   [_outputThread cancel];
   if (_playFlag)
   {
