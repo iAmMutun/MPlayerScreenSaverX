@@ -47,12 +47,6 @@
     }
     
     NSNotificationCenter *noti = [NSNotificationCenter defaultCenter];
-    [noti addObserver:self selector:@selector(windowWillRezie:)
-                 name:NSWindowWillStartLiveResizeNotification object:_window];
-    [noti addObserver:self selector:@selector(windowWillRezie:)
-                 name:NSWindowWillEnterFullScreenNotification object:_window];
-    [noti addObserver:self selector:@selector(windowWillRezie:)
-                 name:NSWindowWillExitFullScreenNotification object:_window];
     [noti addObserver:self selector:@selector(windowDidRezie:)
                  name:NSWindowDidEndLiveResizeNotification object:_window];
     [noti addObserver:self selector:@selector(windowDidRezie:)
@@ -102,14 +96,9 @@
     [_screenSaverView startAnimation];
 }
 
-- (void)windowWillRezie:(NSNotification *)notification
-{
-    [_screenSaverView stopAnimation];
-}
-
 - (void)windowDidRezie:(NSNotification *)notification
 {
-    [_screenSaverView startAnimation];
+    [_screenSaverView setFrameSize:[_window contentLayoutRect].size];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender

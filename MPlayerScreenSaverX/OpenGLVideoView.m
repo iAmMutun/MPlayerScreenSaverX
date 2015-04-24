@@ -7,6 +7,7 @@
 {
   NSSize  _imgSize;
   NSPoint _bound;
+  NSString * _extentMode;
   NSUInteger _bufferCount;
   CVOpenGLBufferRef     * _buffers;
   CVOpenGLTextureCacheRef _cache;
@@ -39,6 +40,39 @@
                      forParameter:NSOpenGLCPSwapInterval];
   }
   return self;
+}
+
+- (void)reshape
+{
+  [super setNeedsDisplay:YES];
+  [[self openGLContext] update];
+  
+  NSSize screenSize = [self bounds].size;
+  CGFloat screenAspect = screenSize.width / screenSize.height;
+  CGFloat imageAspect = _imgSize.width / _imgSize.height;
+  
+  glViewport(0, 0, screenSize.width, screenSize.height);
+  _bound.x = _bound.y = 1.0;
+  
+  if([_extentMode isEqualToString:FitToScreenKey])
+  {
+    if (imageAspect > screenAspect)
+      _bound.y = screenAspect / imageAspect;
+    else if (imageAspect < screenAspect)
+      _bound.x = imageAspect / screenAspect;
+  }
+  else if ([_extentMode isEqualToString:FillScreenKey])
+  {
+    if (imageAspect > screenAspect)
+      _bound.x = imageAspect / screenAspect;
+    else if (imageAspect < screenAspect)
+      _bound.y = screenAspect / imageAspect ;
+  }
+  else if ([_extentMode isEqualToString:CenterToScreenKey])
+  {
+    _bound.x = _imgSize.width  / screenSize.width;
+    _bound.y = _imgSize.height / screenSize.height;
+  }
 }
 
 - (BOOL)isOpaque { return NO; }
@@ -75,39 +109,13 @@
     return ResultFailed;
   }
 
-  NSSize screenSize = [self bounds].size;
-  CGFloat screenAspect = screenSize.width / screenSize.height;
-  CGFloat imageAspect = _imgSize.width / _imgSize.height;
-
-  _bound.x = 1.0;
-  _bound.y = 1.0;
-
   ScreenSaverDefaults *userDefaults =
     [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
-  NSString *extentMode = [userDefaults stringForKey:DefaultExtentKey];
+  _extentMode = [userDefaults stringForKey:DefaultExtentKey];
+  
+  DebugLog(@"Extent mode: %@", _extentMode);
 
-  DebugLog(@"Extent mode: %@", extentMode);
-
-  if([extentMode isEqualToString:FitToScreenKey])
-  {
-    if (imageAspect > screenAspect)
-      _bound.y = screenAspect / imageAspect;
-    else if (imageAspect < screenAspect)
-      _bound.x = imageAspect / screenAspect;
-  }
-  else if ([extentMode isEqualToString:FillScreenKey])
-  {
-    if (imageAspect > screenAspect)
-      _bound.x = imageAspect / screenAspect;
-    else if (imageAspect < screenAspect)
-      _bound.y = screenAspect / imageAspect ;
-  }
-  else if ([extentMode isEqualToString:CenterToScreenKey])
-  {
-    _bound.x = _imgSize.width  / screenSize.width;
-    _bound.y = _imgSize.height / screenSize.height;
-  }
-
+  [self reshape];
   return ResultSuccess;
 }
 
@@ -131,15 +139,16 @@
   }
 }
 
-- (ResultType)render:(NSUInteger)frame
+- (ResultType)render:(NSNumber*)frame
 {
+  NSUInteger frameNum = [frame unsignedIntegerValue];
   [self.openGLContext makeCurrentContext];
   glClear(GL_COLOR_BUFFER_BIT);
-  if (frame < _bufferCount && _buffers[frame])
+  if (frameNum < _bufferCount && _buffers[frameNum])
   {
     CVOpenGLTextureRef texture;
     CVReturn result = CVOpenGLTextureCacheCreateTextureFromImage(
-                        NULL, _cache, _buffers[frame], NULL, &texture);
+                        NULL, _cache, _buffers[frameNum], NULL, &texture);
     if (result != kCVReturnSuccess)
     {
       [self.openGLContext flushBuffer];

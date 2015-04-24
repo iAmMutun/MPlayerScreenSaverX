@@ -64,6 +64,7 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 
     DebugLog(@"Establishing service connection [%@]", _sharedId);
     _connection = [NSConnection serviceConnectionWithName:_sharedId rootObject:self];
+    [_connection runInNewThread];
     
     _views = [[NSMutableArray alloc] init];
 
@@ -246,7 +247,10 @@ NSString * const kMPlayerNoSound        = @"-nosound";
     [_views  enumerateObjectsUsingBlock:
       ^(id obj, NSUInteger idx, BOOL *stop)
     {
-      [(OpenGLVideoView*)(obj) prepareBuffer:bufferInfo];
+      OpenGLVideoView* view = (OpenGLVideoView*)obj;
+      [view performSelectorOnMainThread:@selector(prepareBuffer:)
+                             withObject:bufferInfo
+                          waitUntilDone:NO];
     }];
     DebugLog(@"Video has started");
     _playFlag = YES;
@@ -262,7 +266,10 @@ NSString * const kMPlayerNoSound        = @"-nosound";
     [_views  enumerateObjectsUsingBlock:
       ^(id obj, NSUInteger idx, BOOL *stop)
     {
-      [(OpenGLVideoView*)(obj) clearBuffer];
+      OpenGLVideoView* view = (OpenGLVideoView*)obj;
+      [view performSelectorOnMainThread:@selector(clearBuffer)
+                             withObject:nil
+                          waitUntilDone:NO];
     }];
 
     [_sharedBuffer unshare];
@@ -292,8 +299,11 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 {
   [_views  enumerateObjectsUsingBlock:
     ^(id obj, NSUInteger idx, BOOL *stop)
-  {
-    [(OpenGLVideoView*)(obj) render:frameNum];
+   {
+     OpenGLVideoView* view = (OpenGLVideoView*)obj;
+     [view performSelectorOnMainThread:@selector(render:)
+                            withObject:[NSNumber numberWithUnsignedInteger:frameNum]
+                         waitUntilDone:NO];
   }];
 }
 
