@@ -37,6 +37,10 @@
 		344CB7BA1ADC909500CFBB16 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 344CB7B91ADC909500CFBB16 /* main.m */; };
 		344CB7BC1ADC909500CFBB16 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 344CB7BB1ADC909500CFBB16 /* Images.xcassets */; };
 		344CB7BF1ADC909500CFBB16 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 344CB7BD1ADC909500CFBB16 /* MainMenu.xib */; };
+		34811A141AEABB8900658D39 /* MPlayerLaunchInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 34811A121AEABB8900658D39 /* MPlayerLaunchInfo.h */; };
+		34811A151AEABB8900658D39 /* MPlayerLaunchInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 34811A131AEABB8900658D39 /* MPlayerLaunchInfo.m */; };
+		34811A181AEABD6E00658D39 /* VideoQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 34811A161AEABD6E00658D39 /* VideoQueue.h */; };
+		34811A191AEABD6E00658D39 /* VideoQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 34811A171AEABD6E00658D39 /* VideoQueue.m */; };
 		34DF0F08197D5533003C9323 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34DF0F07197D5533003C9323 /* Cocoa.framework */; };
 		34DF0F0A197D5533003C9323 /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34DF0F09197D5533003C9323 /* ScreenSaver.framework */; };
 		34DF0F24197D57EB003C9323 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34DF0F22197D57EB003C9323 /* CoreVideo.framework */; };
@@ -92,6 +96,10 @@
 		344CB7B91ADC909500CFBB16 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		344CB7BB1ADC909500CFBB16 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		344CB7BE1ADC909500CFBB16 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		34811A121AEABB8900658D39 /* MPlayerLaunchInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPlayerLaunchInfo.h; sourceTree = "<group>"; };
+		34811A131AEABB8900658D39 /* MPlayerLaunchInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPlayerLaunchInfo.m; sourceTree = "<group>"; };
+		34811A161AEABD6E00658D39 /* VideoQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoQueue.h; sourceTree = "<group>"; };
+		34811A171AEABD6E00658D39 /* VideoQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoQueue.m; sourceTree = "<group>"; };
 		34DF0F04197D5533003C9323 /* MPlayerScreenSaverX.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MPlayerScreenSaverX.saver; sourceTree = BUILT_PRODUCTS_DIR; };
 		34DF0F07197D5533003C9323 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		34DF0F09197D5533003C9323 /* ScreenSaver.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScreenSaver.framework; path = System/Library/Frameworks/ScreenSaver.framework; sourceTree = SDKROOT; };
@@ -216,6 +224,10 @@
 				343CED681983B77F0012B13D /* Common.m */,
 				343CED721983B77F0012B13D /* MPlayerController.h */,
 				343CED731983B77F0012B13D /* MPlayerController.m */,
+				34811A121AEABB8900658D39 /* MPlayerLaunchInfo.h */,
+				34811A131AEABB8900658D39 /* MPlayerLaunchInfo.m */,
+				34811A161AEABD6E00658D39 /* VideoQueue.h */,
+				34811A171AEABD6E00658D39 /* VideoQueue.m */,
 				343CED7A1983B77F0012B13D /* MPlayerScreenSaverXView.h */,
 				343CED7B1983B77F0012B13D /* MPlayerScreenSaverXView.m */,
 				343CED7C1983B77F0012B13D /* OpenGLVideoView.h */,
@@ -268,10 +280,12 @@
 				343CED8E1983B77F0012B13D /* MPlayerController.h in Headers */,
 				343CEDA01983B77F0012B13D /* VideoListController.h in Headers */,
 				343CED9E1983B77F0012B13D /* VideoFrameBufferInfo.h in Headers */,
+				34811A181AEABD6E00658D39 /* VideoQueue.h in Headers */,
 				343CED951983B77F0012B13D /* MPlayerScreenSaverX-Prefix.pch in Headers */,
 				343CED931983B77F0012B13D /* MPlayerScreenSaverXConfigureSheet.h in Headers */,
 				343CED961983B77F0012B13D /* MPlayerScreenSaverXView.h in Headers */,
 				343CED9A1983B77F0012B13D /* SharedMemoryMapper.h in Headers */,
+				34811A141AEABB8900658D39 /* MPlayerLaunchInfo.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,6 +412,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				343CED941983B77F0012B13D /* MPlayerScreenSaverXConfigureSheet.m in Sources */,
+				34811A151AEABB8900658D39 /* MPlayerLaunchInfo.m in Sources */,
+				34811A191AEABD6E00658D39 /* VideoQueue.m in Sources */,
 				343CEDA11983B77F0012B13D /* VideoListController.m in Sources */,
 				343CED9F1983B77F0012B13D /* VideoFrameBufferInfo.m in Sources */,
 				343CED8F1983B77F0012B13D /* MPlayerController.m in Sources */,

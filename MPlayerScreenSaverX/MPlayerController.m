@@ -1,41 +1,22 @@
 #import "MPlayerController.h"
 #import "SharedMemoryMapper.h"
 #import "VideoFrameBufferInfo.h"
+#import "MPlayerLaunchInfo.h"
+#import "VideoQueue.h"
 #import <ScreenSaver/ScreenSaver.h>
-
-NSString * const kMPlayerNoConfig       = @"-noconfig";
-NSString * const kMPlayerNoConfigParam  = @"all";
-NSString * const kMPlayerLoop           = @"-loop";
-NSString * const kMPlayerLoopParam      = @"0";
-NSString * const kMPlayerSlave          = @"-slave";
-NSString * const kMPlayerIdle           = @"-idle";
-NSString * const kMPlayerQuiet          = @"-quiet";
-NSString * const kMPlayerVFCLR          = @"-vf-clr";
-NSString * const kMPlayerAFCLR          = @"-af-clr";
-NSString * const kMPlayerVO             = @"-vo";
-NSString * const kMPlayerVOParam        = @"corevideo:shared_buffer:buffer_name=";
-NSString * const kMPlayerVolume         = @"-volume";
-NSString * const kMPlayerNoAutoSub      = @"-noautosub";
-NSString * const kMPlayerNoSub          = @"-nosub";
-NSString * const kMPlayerNoSound        = @"-nosound";
 
 @interface MPlayerController ()
 {
-  NSTask    * _task;
-  NSPipe    * _inputPipe;
-  NSPipe    * _outputPipe;
-  NSString  * _execPath;
-  NSConnection    * _connection;
-  NSMutableArray  * _args;
-  NSMutableDictionary   * _envs;
-  SharedMemoryMapper  * _sharedBuffer;
-  NSString        * _sharedId;
-  NSMutableArray  * _videosQueue;
-  NSDictionary    * _currentVideo;
-  BOOL  _loadFlag;
-  BOOL  _playFlag;
-  BOOL  _shuffle;
-  NSMutableArray *_views;
+  NSTask * _task;
+  NSPipe * _inputPipe;
+  NSPipe * _outputPipe;
+  NSConnection       * _connection;
+  MPlayerLaunchInfo  * _launchInfo;
+  SharedMemoryMapper * _sharedBuffer;
+  VideoQueue         * _videoQueue;
+  NSMutableArray     * _views;
+  BOOL _loadFlag;
+  BOOL _playFlag;
 }
 @end
 
@@ -49,22 +30,15 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   self = [super init];
   if (self)
   {
-    unsigned int msSine1970 = (unsigned int)(1000 * [[NSDate date] timeIntervalSince1970]);
-    _sharedId = [NSString stringWithFormat:@"%@_%u", SharedIdentifierPrefixString, msSine1970];
-    
-    _sharedBuffer = [[SharedMemoryMapper alloc] initWithName:_sharedId];
-    
-    NSBundle *bundle = [NSBundle bundleWithIdentifier:BundleIdentifierString];
-    _execPath = [bundle pathForAuxiliaryExecutable:@"mplayer"];
-      
-    DebugLog(@"MPlayer: %@", _execPath);
+    _launchInfo = [[MPlayerLaunchInfo alloc] init];
+    NSString *sharedId = [_launchInfo sharedId];
 
-    _envs = [[[NSProcessInfo processInfo] environment] mutableCopy];
-    _envs[@"TERM"] = @"xterm";
-
-    DebugLog(@"Establishing service connection [%@]", _sharedId);
-    _connection = [NSConnection serviceConnectionWithName:_sharedId rootObject:self];
+    DebugLog(@"Establishing service connection [%@]", sharedId);
+    _connection = [NSConnection serviceConnectionWithName:sharedId rootObject:self];
     [_connection runInNewThread];
+
+    _sharedBuffer = [[SharedMemoryMapper alloc] initWithName:sharedId];
+    _videoQueue = [[VideoQueue alloc] init];
     
     _views = [[NSMutableArray alloc] init];
 
@@ -79,53 +53,15 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 
 - (void)refreshArguments
 {
-  DebugLog(@"Loading options");
-
-  ScreenSaverDefaults *defaults = [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
-
-  NSString *voParam = [NSString stringWithFormat:@"%@%@", kMPlayerVOParam, _sharedId];
-  NSString *volumeParam = [defaults stringForKey:DefaultVolumeKey];
-  BOOL mute = [defaults boolForKey:DefaultMuteKey];
-
-  DebugLog(@"Volume: %@", volumeParam);
-  DebugLog(@"Mute: %@", (mute ? @"Muted" : @"Not muted"));
-
-  _args = [[NSMutableArray alloc] initWithObjects:
-                      kMPlayerNoConfig, kMPlayerNoConfigParam,
-                      kMPlayerSlave, kMPlayerIdle, kMPlayerQuiet,
-                      kMPlayerVFCLR, kMPlayerAFCLR,
-                      kMPlayerNoAutoSub, kMPlayerNoSub,
-                      kMPlayerVO, voParam,
-                      kMPlayerVolume, volumeParam,
-                      nil];
-  if (mute)
-    [_args addObject:kMPlayerNoSound];
-  
-  _videosQueue = [[NSMutableArray alloc] initWithArray:[defaults valueForKey:DefaultVideoListKey]];
-  _shuffle = [defaults boolForKey:DefaultShuffleKey];
-  if (_shuffle)
-  {
-    NSUInteger count = [_videosQueue count];
-    for (NSUInteger i = 0; i < count; i++)
-    {
-      u_int32_t left = (u_int32_t)(count - i);
-      NSInteger j = i + arc4random_uniform(left);
-      [_videosQueue exchangeObjectAtIndex:i withObjectAtIndex:j];
-    }
-  }
-  DebugLog(@"Shuffle: %@", (_shuffle ? @"On" : @"Off"));
 }
 
 - (void)launch
 {
-  [self refreshArguments];
-  DebugLog(@"Starting MPlayer");
-  if ([_videosQueue count] == 0)
-  {
-    DebugError(@"No video in queue. Halted");
-    return;
-  }
+  DebugLog(@"Loading options");
+  [_launchInfo refresh];
+  [_videoQueue refresh];
 
+  DebugLog(@"Starting MPlayer");
   NSNotificationCenter *notiCenter = [NSNotificationCenter defaultCenter];
 
   _loadFlag = NO;
@@ -137,19 +73,20 @@ NSString * const kMPlayerNoSound        = @"-nosound";
                       name:NSFileHandleDataAvailableNotification
                     object:outputHandle];
   [outputHandle waitForDataInBackgroundAndNotify];
+  
   _task = [[NSTask alloc] init];
   [notiCenter addObserver:self selector:@selector(mplayerHasQuit:)
                              name:NSTaskDidTerminateNotification
                            object:_task];
-  [_task setLaunchPath:_execPath];
-  [_task setEnvironment:_envs];
-  [_task setArguments:_args];
+  [_task setLaunchPath:[_launchInfo executablePath]];
+  [_task setEnvironment:[_launchInfo environment]];
+  [_task setArguments:[_launchInfo arguments]];
   [_task setStandardInput:_inputPipe];
   [_task setStandardOutput:_outputPipe];
   [_task setStandardError:_outputPipe];
   [_task launch];
   DebugLog(@"MPlayer has started");
-  [self nextVideo];
+  [self loadNextVideo];
 }
 
 - (void)terminate
@@ -203,18 +140,16 @@ NSString * const kMPlayerNoSound        = @"-nosound";
                        object:[_outputPipe fileHandleForReading]];
 }
 
-- (void)nextVideo
+- (void)loadNextVideo
 {
   _playFlag = NO;
-  if ([_videosQueue count] == 0)
+  if (![_videoQueue nextVideo])
   {
     DebugError(@"No video in queue. Halted");
     [self terminate];
     return;
   }
-  _currentVideo = _videosQueue[0];
-  [_videosQueue removeObjectAtIndex:0];
-  NSString *videoPath = [_currentVideo valueForKey:DefaultVideoPathKey];
+  NSString *videoPath = [_videoQueue currentVideoPath];
   NSString *cmd = [NSString stringWithFormat:@"loadfile \"%@\" 1\n", videoPath];
   [self writeToMPlayer:cmd];
   [self writeToMPlayer:@"get_property path\n"];
@@ -274,25 +209,13 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 
     [_sharedBuffer unshare];
     DebugLog(@"Video has stopped");
-    
-    if (_shuffle && arc4random_uniform(2) == 0)
-    {
-      NSUInteger lowerBound = MIN(1, [_videosQueue count]);
-      NSUInteger upperBound = [_videosQueue count];
-      NSUInteger range = upperBound - lowerBound;
-      NSUInteger i = lowerBound + arc4random_uniform((u_int32_t)range);
-      [_videosQueue insertObject:_currentVideo atIndex:i];
-    }
-    else
-    {
-      [_videosQueue addObject:_currentVideo];
-    }
   }
   else
   {
-    DebugError(@"MPlayer can't play the file [%@]", [_currentVideo valueForKey:DefaultVideoPathKey]);
+    DebugError(@"MPlayer can't play the file [%@]", [_videoQueue currentVideoPath]);
+    [_videoQueue discardCurrentVideo];
   }
-  [self nextVideo];
+  [self loadNextVideo];
 }
 
 - (void)render:(bycopy NSUInteger)frameNum;
