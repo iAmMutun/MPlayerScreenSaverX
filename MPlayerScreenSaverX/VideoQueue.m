@@ -40,12 +40,14 @@
 {
   if (_currentVideo != nil)
   {
-    if (_shuffle && arc4random_uniform(2) == 0)
+    if (_shuffle)
     {
       NSUInteger lowerBound = MIN(1, [_videosQueue count]);
       NSUInteger upperBound = [_videosQueue count];
-      NSUInteger range = upperBound - lowerBound;
-      NSUInteger i = lowerBound + arc4random_uniform((u_int32_t)range);
+      NSUInteger range = upperBound - lowerBound + 1;
+      double p = (double)arc4random_uniform(RAND_MAX) / RAND_MAX;
+      double q = ((p * p) * (p + 1) * (p + 1)) / 4;
+      NSUInteger i = lowerBound + (range - q * range);
       [_videosQueue insertObject:_currentVideo atIndex:i];
     }
     else
