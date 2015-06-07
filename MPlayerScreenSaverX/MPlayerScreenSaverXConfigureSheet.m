@@ -16,7 +16,8 @@
 }
 
 - (IBAction)setMute:(id)sender;
-- (IBAction)closeConfigureSheet:(id)sender;
+- (IBAction)saveAndClose:(id)sender;
+- (IBAction)closeWithoutSave:(id)sender;
 - (IBAction)addVideoDialog:(id)sender;
 
 @end
@@ -58,9 +59,9 @@
   [volumeSlider setEnabled:([muteCheckbox state] != NSOnState)];
 }
 
-- (IBAction)closeConfigureSheet:(id)sender
+- (IBAction)saveAndClose:(id)sender
 {
-  DebugLog(@"Closing configure sheet");
+  DebugLog(@"Saving configuration");
   ScreenSaverDefaults *userDefaults = [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
   [userDefaults setValue:[extentModeController extentMode] forKey:DefaultExtentKey];
   [userDefaults setBool:([muteCheckbox state] == NSOnState) forKey:DefaultMuteKey];
@@ -68,6 +69,17 @@
   [userDefaults setObject:[videoListController videos] forKey:DefaultVideoListKey];
   [userDefaults setBool:([shuffleCheckbox state] == NSOnState) forKey:DefaultShuffleKey];
   [userDefaults synchronize];
+  [self close];
+}
+
+- (IBAction)closeWithoutSave:(id)sender
+{
+  [self close];
+}
+
+- (void)close
+{
+  DebugLog(@"Closing configure sheet");
   [[NSApplication sharedApplication] endSheet:self];
 }
 
