@@ -2,7 +2,6 @@
 #define _VideoListController_h
 
 #import "Common.h"
-#import <Cocoa/Cocoa.h>
 #import "VideoItem.h"
 
 @interface VideoListController : NSArrayController
