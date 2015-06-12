@@ -3,7 +3,6 @@
 #import "VideoFrameBufferInfo.h"
 #import "MPlayerLaunchInfo.h"
 #import "VideoQueue.h"
-#import <ScreenSaver/ScreenSaver.h>
 
 @interface MPlayerController ()
 {
@@ -69,15 +68,16 @@
   _outputPipe = [[NSPipe alloc] init];
   NSFileHandle *outputHandle = [_outputPipe fileHandleForReading];
   [notiCenter addObserver:self
-                  selector:@selector(mplayerOutput:)
-                      name:NSFileHandleDataAvailableNotification
-                    object:outputHandle];
+                 selector:@selector(mplayerOutput:)
+                     name:NSFileHandleDataAvailableNotification
+                   object:outputHandle];
   [outputHandle waitForDataInBackgroundAndNotify];
   
   _task = [[NSTask alloc] init];
-  [notiCenter addObserver:self selector:@selector(mplayerHasQuit:)
-                             name:NSTaskDidTerminateNotification
-                           object:_task];
+  [notiCenter addObserver:self
+                 selector:@selector(mplayerHasQuit:)
+                     name:NSTaskDidTerminateNotification
+                   object:_task];
   [_task setLaunchPath:[_launchInfo executablePath]];
   [_task setEnvironment:[_launchInfo environment]];
   [_task setArguments:[_launchInfo arguments]];
@@ -149,7 +149,7 @@
     [self terminate];
     return;
   }
-  NSString *videoPath = [_videoQueue currentVideoPath];
+  NSString *videoPath = [[_videoQueue currentVideo] videoPath];
   NSString *cmd = [NSString stringWithFormat:@"loadfile \"%@\" 1\n", videoPath];
   [self writeToMPlayer:cmd];
   [self writeToMPlayer:@"get_property path\n"];
@@ -212,7 +212,8 @@
   }
   else
   {
-    DebugError(@"MPlayer can't play the file [%@]", [_videoQueue currentVideoPath]);
+    NSString *videoPath = [[_videoQueue currentVideo] videoPath];
+    DebugError(@"MPlayer can't play the file [%@]", videoPath);
     [_videoQueue discardCurrentVideo];
   }
   [self loadNextVideo];

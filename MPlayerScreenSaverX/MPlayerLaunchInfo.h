@@ -2,7 +2,6 @@
 #define _MPlayerLaunchInfo_h
 
 #import "Common.h"
-#import <Cocoa/Cocoa.h>
 
 @interface MPlayerLaunchInfo : NSObject
 

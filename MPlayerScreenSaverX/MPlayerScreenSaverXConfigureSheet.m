@@ -1,7 +1,6 @@
 #import "MPlayerScreenSaverXConfigureSheet.h"
 #import "VideoListController.h"
-#import "ExtentModeController.h"
-#import <ScreenSaver/ScreenSaver.h>
+#import "UserOptions.h"
 #import "Version.h"
 
 @interface MPlayerScreenSaverXConfigureSheet ()
@@ -10,7 +9,7 @@
   IBOutlet NSButton *muteCheckbox;
   IBOutlet NSTextField *versionLabel;
   IBOutlet NSTextField *copyrightLabel;
-  IBOutlet ExtentModeController *extentModeController;
+  IBOutlet NSArrayController *extentModeController;
   IBOutlet VideoListController *videoListController;
   IBOutlet NSButton * shuffleCheckbox;
 }
@@ -19,6 +18,7 @@
 - (IBAction)saveAndClose:(id)sender;
 - (IBAction)closeWithoutSave:(id)sender;
 - (IBAction)addVideoDialog:(id)sender;
+- (void)closeSheet;
 
 @end
 
@@ -30,27 +30,28 @@
 {
   [versionLabel setStringValue:@MPSSX_VERSION_READ];
   [copyrightLabel setStringValue:@MPSSX_COPY];
+  [extentModeController addObjects:[ExtentMode allExtentModes]];
 }
 
 - (void)reload
 {
   DebugLog(@"Initializing configure sheet");
-  ScreenSaverDefaults *userDefaults = [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
+  UserOptions *options = [UserOptions defaultUserOptions];
 
   [videoListController clearVideos];
-  [videoListController addVideos:[userDefaults arrayForKey:DefaultVideoListKey]];
+  [videoListController addVideos:[options videos]];
   [videoListController setSelectionIndexes:nil];
+  
+  [extentModeController setSelectedObjects:@[[options extent]]];
 
-  [extentModeController setExtentMode:[userDefaults stringForKey:DefaultExtentKey]];
-
-  BOOL mute = [userDefaults boolForKey:DefaultMuteKey];
+  BOOL mute = [options mute];
   [muteCheckbox setState:(mute ? NSOnState : NSOffState)];
   [volumeSlider setEnabled:!mute];
 
-  NSInteger volume = [userDefaults integerForKey:DefaultVolumeKey];
+  NSInteger volume = [options volume];
   [volumeSlider setIntegerValue:volume];
   
-  BOOL shuffle = [userDefaults boolForKey:DefaultShuffleKey];
+  BOOL shuffle = [options shuffle];
   [shuffleCheckbox setState:(shuffle ? NSOnState : NSOffState)];
 }
 
@@ -62,22 +63,22 @@
 - (IBAction)saveAndClose:(id)sender
 {
   DebugLog(@"Saving configuration");
-  ScreenSaverDefaults *userDefaults = [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
-  [userDefaults setValue:[extentModeController extentMode] forKey:DefaultExtentKey];
-  [userDefaults setBool:([muteCheckbox state] == NSOnState) forKey:DefaultMuteKey];
-  [userDefaults setInteger:[volumeSlider integerValue] forKey:DefaultVolumeKey];
-  [userDefaults setObject:[videoListController videos] forKey:DefaultVideoListKey];
-  [userDefaults setBool:([shuffleCheckbox state] == NSOnState) forKey:DefaultShuffleKey];
-  [userDefaults synchronize];
-  [self close];
+  UserOptions *options = [UserOptions defaultUserOptions];
+  [options setVideos:[videoListController videos]];
+  [options setShuffle:([shuffleCheckbox state] == NSOnState)];
+  [options setExtent:[extentModeController selectedObjects][0]];
+  [options setVolume:[volumeSlider integerValue]];
+  [options setMute:([muteCheckbox state] == NSOnState)];
+  [options synchronize];
+  [self closeSheet];
 }
 
 - (IBAction)closeWithoutSave:(id)sender
 {
-  [self close];
+  [self closeSheet];
 }
 
-- (void)close
+- (void)closeSheet
 {
   DebugLog(@"Closing configure sheet");
   [[NSApplication sharedApplication] endSheet:self];
@@ -97,8 +98,7 @@
         ^(id obj, NSUInteger idx, BOOL *stop)
       {
         NSString *path = [(NSURL*)obj path];
-        NSDictionary *video = @{DefaultVideoPathKey: path};
-        [videos addObject:video];
+        [videos addObject:[VideoItem videoWithPath:path]];
       }];
       [videoListController addVideos:videos];
     }

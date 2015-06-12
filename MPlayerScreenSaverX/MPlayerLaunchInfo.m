@@ -1,26 +1,23 @@
 #import "MPlayerLaunchInfo.h"
-#import <ScreenSaver/ScreenSaver.h>
+#import "UserOptions.h"
 
-NSString * const kMPlayerNoConfig       = @"-noconfig";
-NSString * const kMPlayerNoConfigParam  = @"all";
-NSString * const kMPlayerLoop           = @"-loop";
-NSString * const kMPlayerLoopParam      = @"0";
-NSString * const kMPlayerSlave          = @"-slave";
-NSString * const kMPlayerIdle           = @"-idle";
-NSString * const kMPlayerQuiet          = @"-quiet";
-NSString * const kMPlayerVFCLR          = @"-vf-clr";
-NSString * const kMPlayerAFCLR          = @"-af-clr";
-NSString * const kMPlayerVO             = @"-vo";
-NSString * const kMPlayerVOParam        = @"corevideo:shared_buffer:buffer_name=";
-NSString * const kMPlayerVolume         = @"-volume";
-NSString * const kMPlayerNoAutoSub      = @"-noautosub";
-NSString * const kMPlayerNoSub          = @"-nosub";
-NSString * const kMPlayerNoSound        = @"-nosound";
-
-@interface MPlayerLaunchInfo ()
-{
-}
-@end
+static NSString * const SharedIdentifierPrefix  = @"mpssx_shared_id";
+static NSString * const ParameterNoConfig       = @"-noconfig";
+static NSString * const ParameterNoConfigValue  = @"all";
+static NSString * const ParameterLoop           = @"-loop";
+static NSString * const ParameterLoopValue      = @"0";
+static NSString * const ParameterSlave          = @"-slave";
+static NSString * const ParameterIdle           = @"-idle";
+static NSString * const ParameterQuiet          = @"-quiet";
+static NSString * const ParameterVFCLR          = @"-vf-clr";
+static NSString * const ParameterAFCLR          = @"-af-clr";
+static NSString * const ParameterVO             = @"-vo";
+static NSString * const ParameterVOValue        = @"corevideo:shared_buffer:buffer_name=";
+static NSString * const ParameterVolume         = @"-volume";
+static NSString * const ParameterNoSound        = @"-nosound";
+static NSString * const ParameterNoAutoSub      = @"-noautosub";
+static NSString * const ParameterNoSub          = @"-nosub";
+static NSString * const ParameterFrameDrop      = @"-framedrop";
 
 
 
@@ -32,7 +29,7 @@ NSString * const kMPlayerNoSound        = @"-nosound";
   if (self)
   {
     unsigned int msSine1970 = (unsigned int)(1000 * [[NSDate date] timeIntervalSince1970]);
-    _sharedId = [NSString stringWithFormat:@"%@_%u", SharedIdentifierPrefixString, msSine1970];
+    _sharedId = [NSString stringWithFormat:@"%@_%u", SharedIdentifierPrefix, msSine1970];
 
     NSMutableDictionary *envs = [[[NSProcessInfo processInfo] environment] mutableCopy];
     envs[@"TERM"] = @"xterm";
@@ -48,24 +45,23 @@ NSString * const kMPlayerNoSound        = @"-nosound";
 
 - (void)refresh
 {
-  ScreenSaverDefaults *defaults =
-    [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
+  UserOptions *options = [UserOptions defaultUserOptions];
   
-  NSString *voParam = [NSString stringWithFormat:@"%@%@", kMPlayerVOParam, _sharedId];
-  NSString *volumeParam = [defaults stringForKey:DefaultVolumeKey];
-  BOOL mute = [defaults boolForKey:DefaultMuteKey];
-  NSString *muteParam = mute ? kMPlayerNoSound : nil;
+  NSString *voParam = [NSString stringWithFormat:@"%@%@", ParameterVOValue, _sharedId];
+  NSString *volumeParam = [options volumeString];
+  BOOL mute = [options mute];
+  NSString *muteParam = mute ? ParameterNoSound : nil;
   
   DebugLog(@"Volume: %@", volumeParam);
   DebugLog(@"Mute: %@", (mute ? @"Muted" : @"Not muted"));
   
   _arguments = [[NSArray alloc] initWithObjects:
-           kMPlayerNoConfig, kMPlayerNoConfigParam,
-           kMPlayerSlave, kMPlayerIdle, kMPlayerQuiet,
-           kMPlayerVFCLR, kMPlayerAFCLR,
-           kMPlayerNoAutoSub, kMPlayerNoSub,
-           kMPlayerVO, voParam,
-           kMPlayerVolume, volumeParam, muteParam,
+           ParameterNoConfig, ParameterNoConfigValue,
+           ParameterSlave, ParameterIdle, ParameterQuiet,
+           ParameterVFCLR, ParameterAFCLR,
+           ParameterNoAutoSub, ParameterNoSub, ParameterFrameDrop,
+           ParameterVO, voParam,
+           ParameterVolume, volumeParam, muteParam,
            nil];
 }
 @end

@@ -2,7 +2,6 @@
 #define _VideoFrameBufferInfo_h
 
 #import "Common.h"
-#import <Cocoa/Cocoa.h>
 
 @interface VideoFrameBufferInfo : NSObject
 

@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34159D411B248FB100AC6A4B /* UserOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 34159D3F1B248FB100AC6A4B /* UserOptions.h */; };
+		34159D421B248FB100AC6A4B /* UserOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 34159D401B248FB100AC6A4B /* UserOptions.m */; };
+		34159D451B24987000AC6A4B /* ExtentMode.h in Headers */ = {isa = PBXBuildFile; fileRef = 34159D431B24987000AC6A4B /* ExtentMode.h */; };
+		34159D461B24987000AC6A4B /* ExtentMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 34159D441B24987000AC6A4B /* ExtentMode.m */; };
+		34159D491B25F81C00AC6A4B /* VideoItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 34159D471B25F81C00AC6A4B /* VideoItem.h */; };
+		34159D4A1B25F81C00AC6A4B /* VideoItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 34159D481B25F81C00AC6A4B /* VideoItem.m */; };
 		343CED861983B77F0012B13D /* Common.h in Headers */ = {isa = PBXBuildFile; fileRef = 343CED671983B77F0012B13D /* Common.h */; };
-		343CED871983B77F0012B13D /* Common.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CED681983B77F0012B13D /* Common.m */; };
 		343CED881983B77F0012B13D /* ConfigureSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 343CED6A1983B77F0012B13D /* ConfigureSheet.xib */; };
 		343CED891983B77F0012B13D /* Extent.strings in Resources */ = {isa = PBXBuildFile; fileRef = 343CED6C1983B77F0012B13D /* Extent.strings */; };
-		343CED8A1983B77F0012B13D /* ExtentModeController.h in Headers */ = {isa = PBXBuildFile; fileRef = 343CED6E1983B77F0012B13D /* ExtentModeController.h */; };
-		343CED8B1983B77F0012B13D /* ExtentModeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CED6F1983B77F0012B13D /* ExtentModeController.m */; };
 		343CED8E1983B77F0012B13D /* MPlayerController.h in Headers */ = {isa = PBXBuildFile; fileRef = 343CED721983B77F0012B13D /* MPlayerController.h */; };
 		343CED8F1983B77F0012B13D /* MPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CED731983B77F0012B13D /* MPlayerController.m */; };
 		343CED901983B77F0012B13D /* MPlayerScreenSaverX Background.png in Resources */ = {isa = PBXBuildFile; fileRef = 343CED741983B77F0012B13D /* MPlayerScreenSaverX Background.png */; };
@@ -62,12 +65,15 @@
 
 /* Begin PBXFileReference section */
 		340042911ADBE2B100F6552B /* Version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
+		34159D3F1B248FB100AC6A4B /* UserOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserOptions.h; sourceTree = "<group>"; };
+		34159D401B248FB100AC6A4B /* UserOptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserOptions.m; sourceTree = "<group>"; };
+		34159D431B24987000AC6A4B /* ExtentMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtentMode.h; sourceTree = "<group>"; };
+		34159D441B24987000AC6A4B /* ExtentMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtentMode.m; sourceTree = "<group>"; };
+		34159D471B25F81C00AC6A4B /* VideoItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoItem.h; path = ../VideoItem.h; sourceTree = "<group>"; };
+		34159D481B25F81C00AC6A4B /* VideoItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoItem.m; path = ../VideoItem.m; sourceTree = "<group>"; };
 		343CED671983B77F0012B13D /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
-		343CED681983B77F0012B13D /* Common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Common.m; sourceTree = "<group>"; };
 		343CED6B1983B77F0012B13D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ConfigureSheet.xib; sourceTree = "<group>"; };
 		343CED6D1983B77F0012B13D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Extent.strings; sourceTree = "<group>"; };
-		343CED6E1983B77F0012B13D /* ExtentModeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtentModeController.h; sourceTree = "<group>"; };
-		343CED6F1983B77F0012B13D /* ExtentModeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtentModeController.m; sourceTree = "<group>"; };
 		343CED711983B77F0012B13D /* mplayer */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mplayer; sourceTree = "<group>"; };
 		343CED721983B77F0012B13D /* MPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPlayerController.h; sourceTree = "<group>"; };
 		343CED731983B77F0012B13D /* MPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = MPlayerController.m; sourceTree = "<group>"; tabWidth = 2; };
@@ -221,7 +227,6 @@
 			isa = PBXGroup;
 			children = (
 				343CED671983B77F0012B13D /* Common.h */,
-				343CED681983B77F0012B13D /* Common.m */,
 				343CED721983B77F0012B13D /* MPlayerController.h */,
 				343CED731983B77F0012B13D /* MPlayerController.m */,
 				34811A121AEABB8900658D39 /* MPlayerLaunchInfo.h */,
@@ -236,6 +241,12 @@
 				343CED7F1983B77F0012B13D /* SharedMemoryMapper.m */,
 				343CED821983B77F0012B13D /* VideoFrameBufferInfo.h */,
 				343CED831983B77F0012B13D /* VideoFrameBufferInfo.m */,
+				34159D3F1B248FB100AC6A4B /* UserOptions.h */,
+				34159D401B248FB100AC6A4B /* UserOptions.m */,
+				34159D431B24987000AC6A4B /* ExtentMode.h */,
+				34159D441B24987000AC6A4B /* ExtentMode.m */,
+				34159D471B25F81C00AC6A4B /* VideoItem.h */,
+				34159D481B25F81C00AC6A4B /* VideoItem.m */,
 				340042911ADBE2B100F6552B /* Version.h */,
 				34DF0F26197D57F7003C9323 /* ConfigureSheet */,
 				34DF0F10197D5533003C9323 /* Supporting Files */,
@@ -257,8 +268,6 @@
 		34DF0F26197D57F7003C9323 /* ConfigureSheet */ = {
 			isa = PBXGroup;
 			children = (
-				343CED6E1983B77F0012B13D /* ExtentModeController.h */,
-				343CED6F1983B77F0012B13D /* ExtentModeController.m */,
 				343CED771983B77F0012B13D /* MPlayerScreenSaverXConfigureSheet.h */,
 				343CED781983B77F0012B13D /* MPlayerScreenSaverXConfigureSheet.m */,
 				343CED841983B77F0012B13D /* VideoListController.h */,
@@ -276,14 +285,16 @@
 			files = (
 				343CED861983B77F0012B13D /* Common.h in Headers */,
 				343CED981983B77F0012B13D /* OpenGLVideoView.h in Headers */,
-				343CED8A1983B77F0012B13D /* ExtentModeController.h in Headers */,
+				34159D411B248FB100AC6A4B /* UserOptions.h in Headers */,
 				343CED8E1983B77F0012B13D /* MPlayerController.h in Headers */,
 				343CEDA01983B77F0012B13D /* VideoListController.h in Headers */,
+				34159D491B25F81C00AC6A4B /* VideoItem.h in Headers */,
 				343CED9E1983B77F0012B13D /* VideoFrameBufferInfo.h in Headers */,
 				34811A181AEABD6E00658D39 /* VideoQueue.h in Headers */,
 				343CED951983B77F0012B13D /* MPlayerScreenSaverX-Prefix.pch in Headers */,
 				343CED931983B77F0012B13D /* MPlayerScreenSaverXConfigureSheet.h in Headers */,
 				343CED961983B77F0012B13D /* MPlayerScreenSaverXView.h in Headers */,
+				34159D451B24987000AC6A4B /* ExtentMode.h in Headers */,
 				343CED9A1983B77F0012B13D /* SharedMemoryMapper.h in Headers */,
 				34811A141AEABB8900658D39 /* MPlayerLaunchInfo.h in Headers */,
 			);
@@ -415,13 +426,14 @@
 				34811A151AEABB8900658D39 /* MPlayerLaunchInfo.m in Sources */,
 				34811A191AEABD6E00658D39 /* VideoQueue.m in Sources */,
 				343CEDA11983B77F0012B13D /* VideoListController.m in Sources */,
+				34159D4A1B25F81C00AC6A4B /* VideoItem.m in Sources */,
 				343CED9F1983B77F0012B13D /* VideoFrameBufferInfo.m in Sources */,
 				343CED8F1983B77F0012B13D /* MPlayerController.m in Sources */,
-				343CED8B1983B77F0012B13D /* ExtentModeController.m in Sources */,
 				343CED971983B77F0012B13D /* MPlayerScreenSaverXView.m in Sources */,
 				343CED9B1983B77F0012B13D /* SharedMemoryMapper.m in Sources */,
-				343CED871983B77F0012B13D /* Common.m in Sources */,
+				34159D461B24987000AC6A4B /* ExtentMode.m in Sources */,
 				343CED991983B77F0012B13D /* OpenGLVideoView.m in Sources */,
+				34159D421B248FB100AC6A4B /* UserOptions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

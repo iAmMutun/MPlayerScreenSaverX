@@ -2,7 +2,6 @@
 #define _OpenGLVideoView_h
 
 #import "Common.h"
-#import <Cocoa/Cocoa.h>
 #import "VideoFrameBufferInfo.h"
 
 @interface OpenGLVideoView : NSOpenGLView

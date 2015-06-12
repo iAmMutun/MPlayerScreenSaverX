@@ -2,7 +2,6 @@
 #define _MPlayerController_h
 
 #import "Common.h"
-#import <Cocoa/Cocoa.h>
 #import "OpenGLVideoView.h"
 
 @protocol MPlayerOSXVOProto

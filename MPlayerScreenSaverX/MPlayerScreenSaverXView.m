@@ -3,6 +3,7 @@
 #import "MPlayerController.h"
 #import "OpenGLVideoView.h"
 #import "VideoFrameBufferInfo.h"
+#import "UserOptions.h"
 
 static NSUInteger gScreens = 0;
 static MPlayerController *gMPlayerController = nil;
@@ -33,15 +34,7 @@ static MPlayerController *gMPlayerController = nil;
     _glView = [[OpenGLVideoView alloc] init];
     DebugLog(@"Initializing Video Saver");
     
-    ScreenSaverDefaults *userDefaults =
-      [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
-    [userDefaults registerDefaults:@{
-      DefaultVideoListKey: [[NSArray alloc] init],
-      DefaultVolumeKey: @"5",
-      DefaultMuteKey: @"NO",
-      DefaultExtentKey: FitToScreenKey,
-      DefaultShuffleKey: @"NO"
-    }];
+    [UserOptions registerDefaults];
 
     // Initialize only on the main screen.
     if (_first)

@@ -96,10 +96,10 @@ Muting is also recommended.</string>
                             <menu key="menu" title="OtherViews" id="53"/>
                         </popUpButtonCell>
                         <connections>
-                            <binding destination="0EU-Ka-XWG" name="content" keyPath="arrangedObjects" id="AmC-Bu-Yb4"/>
-                            <binding destination="0EU-Ka-XWG" name="contentObjects" keyPath="arrangedObjects.Key" previousBinding="AmC-Bu-Yb4" id="zVZ-9S-7yR"/>
-                            <binding destination="0EU-Ka-XWG" name="contentValues" keyPath="arrangedObjects.Label" previousBinding="zVZ-9S-7yR" id="db6-cz-TS2"/>
-                            <binding destination="0EU-Ka-XWG" name="selectedIndex" keyPath="selectionIndex" previousBinding="db6-cz-TS2" id="IAW-SU-7KC"/>
+                            <binding destination="0EU-Ka-XWG" name="content" keyPath="arrangedObjects" id="Rex-F9-asN"/>
+                            <binding destination="0EU-Ka-XWG" name="contentObjects" keyPath="arrangedObjects.enumValue" previousBinding="Rex-F9-asN" id="efp-kQ-cg6"/>
+                            <binding destination="0EU-Ka-XWG" name="contentValues" keyPath="arrangedObjects.uiString" previousBinding="efp-kQ-cg6" id="Jc5-q0-Qd3"/>
+                            <binding destination="0EU-Ka-XWG" name="selectedIndex" keyPath="selectionIndex" previousBinding="Jc5-q0-Qd3" id="eFS-4H-7UU"/>
                         </connections>
                     </popUpButton>
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="SRb-Wt-4rC">
@@ -129,7 +129,7 @@ Muting is also recommended.</string>
                                             </textFieldCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                             <connections>
-                                                <binding destination="Yet-R2-Vee" name="value" keyPath="arrangedObjects.VideoPath" id="LSI-iP-Bgs">
+                                                <binding destination="Yet-R2-Vee" name="value" keyPath="arrangedObjects.videoPath" id="J4m-Ns-clF">
                                                     <dictionary key="options">
                                                         <bool key="NSConditionallySetsEditable" value="YES"/>
                                                     </dictionary>
@@ -227,7 +227,7 @@ Gw
             </view>
             <connections>
                 <outlet property="copyrightLabel" destination="41" id="0L3-ZE-Mr0"/>
-                <outlet property="extentModeController" destination="0EU-Ka-XWG" id="vg0-P0-cCl"/>
+                <outlet property="extentModeController" destination="0EU-Ka-XWG" id="e0D-5p-8yH"/>
                 <outlet property="muteCheckbox" destination="13" id="35"/>
                 <outlet property="shuffleCheckbox" destination="uze-y8-zt5" id="KRl-eI-n7e"/>
                 <outlet property="versionLabel" destination="i1N-0G-P7f" id="tj8-Mt-BDc"/>
@@ -235,15 +235,15 @@ Gw
                 <outlet property="volumeSlider" destination="9" id="31"/>
             </connections>
         </window>
-        <arrayController id="0EU-Ka-XWG" userLabel="Extent Mode Controller" customClass="ExtentModeController">
+        <arrayController objectClassName="ExtentMode" id="0EU-Ka-XWG" userLabel="Extent Mode Controller">
             <declaredKeys>
-                <string>Label</string>
-                <string>Key</string>
+                <string>uiString</string>
+                <string>enumValue</string>
             </declaredKeys>
         </arrayController>
-        <arrayController avoidsEmptySelection="NO" id="Yet-R2-Vee" customClass="VideoListController">
+        <arrayController objectClassName="VideoItem" avoidsEmptySelection="NO" id="Yet-R2-Vee" customClass="VideoListController">
             <declaredKeys>
-                <string>VideoPath</string>
+                <string>videoPath</string>
             </declaredKeys>
             <connections>
                 <outlet property="tableView" destination="fjI-xB-lVj" id="bTx-Ij-qAK"/>

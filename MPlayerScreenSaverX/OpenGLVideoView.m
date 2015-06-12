@@ -1,13 +1,12 @@
 #import "OpenGLVideoView.h"
 #import <OpenGL/gl.h>
-#import <ScreenSaver/ScreenSaver.h>
 #import <CoreVideo/CoreVideo.h>
+#import "UserOptions.h"
 
 @interface OpenGLVideoView ()
 {
   NSSize  _imgSize;
   NSPoint _bound;
-  NSString * _extentMode;
   NSUInteger _bufferCount;
   CVOpenGLBufferRef     * _buffers;
   CVOpenGLTextureCacheRef _cache;
@@ -48,31 +47,11 @@
   [[self openGLContext] update];
   
   NSSize screenSize = [self bounds].size;
-  CGFloat screenAspect = screenSize.width / screenSize.height;
-  CGFloat imageAspect = _imgSize.width / _imgSize.height;
-  
+
+  UserOptions* options = [UserOptions defaultUserOptions];
+  _bound = [[options extent] boundImage:_imgSize toScreen:screenSize];
+
   glViewport(0, 0, screenSize.width, screenSize.height);
-  _bound.x = _bound.y = 1.0;
-  
-  if([_extentMode isEqualToString:FitToScreenKey])
-  {
-    if (imageAspect > screenAspect)
-      _bound.y = screenAspect / imageAspect;
-    else if (imageAspect < screenAspect)
-      _bound.x = imageAspect / screenAspect;
-  }
-  else if ([_extentMode isEqualToString:FillScreenKey])
-  {
-    if (imageAspect > screenAspect)
-      _bound.x = imageAspect / screenAspect;
-    else if (imageAspect < screenAspect)
-      _bound.y = screenAspect / imageAspect ;
-  }
-  else if ([_extentMode isEqualToString:CenterToScreenKey])
-  {
-    _bound.x = _imgSize.width  / screenSize.width;
-    _bound.y = _imgSize.height / screenSize.height;
-  }
 }
 
 - (BOOL)isOpaque { return NO; }
@@ -108,12 +87,6 @@
     DebugError(@"Texture cache creation failed");
     return ResultFailed;
   }
-
-  ScreenSaverDefaults *userDefaults =
-    [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
-  _extentMode = [userDefaults stringForKey:DefaultExtentKey];
-  
-  DebugLog(@"Extent mode: %@", _extentMode);
 
   [self reshape];
   return ResultSuccess;

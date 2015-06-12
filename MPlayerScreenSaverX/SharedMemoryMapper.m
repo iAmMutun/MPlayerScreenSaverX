@@ -8,6 +8,8 @@
 }
 @end
 
+
+
 @implementation SharedMemoryMapper
 
 @synthesize bytes;
@@ -23,15 +25,16 @@
 - (ResultType)share:(NSUInteger)size
 {
   DebugLog(@"Mapping shared memory [%@]", _name);
-  _length = size;
-  int shared_memory_id = shm_open([_name cStringUsingEncoding:NSUTF8StringEncoding], O_RDONLY, S_IRUSR);
-  if (shared_memory_id == -1)
+  const char* cname = [_name cStringUsingEncoding:NSUTF8StringEncoding];
+  int shm_obj = shm_open(cname, O_RDONLY, S_IRUSR);
+  if (shm_obj == -1)
   {
     DebugError(@"Shared memory mapping failed [shm_open]");
     return ResultFailed;
   }
-  bytes = mmap(NULL, (size_t)_length, PROT_READ, MAP_SHARED, shared_memory_id, 0);
-  close(shared_memory_id);
+  _length = size;
+  bytes = mmap(NULL, (size_t)_length, PROT_READ, MAP_SHARED, shm_obj, 0);
+  close(shm_obj);
   if (bytes == MAP_FAILED)
   {
     bytes = NULL;

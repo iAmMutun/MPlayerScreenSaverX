@@ -2,13 +2,14 @@
 #define _VideoQueue_h
 
 #import "Common.h"
-#import <Cocoa/Cocoa.h>
+#import "VideoItem.h"
 
 @interface VideoQueue : NSObject
 
+@property (readonly) VideoItem* currentVideo;
+
 - (void)refresh;
 - (BOOL)nextVideo;
-- (NSString*)currentVideoPath;
 - (void)discardCurrentVideo;
 
 @end

@@ -1,10 +1,10 @@
 #import "VideoQueue.h"
-#import <ScreenSaver/ScreenSaver.h>
+#import "UserOptions.h"
+#import "VideoItem.h"
 
 @interface VideoQueue ()
 {
-  NSMutableArray  * _videosQueue;
-  NSDictionary    * _currentVideo;
+  NSMutableArray * _videosQueue;
   BOOL _shuffle;
 }
 @end
@@ -15,11 +15,10 @@
 
 - (void)refresh
 {
-  ScreenSaverDefaults *defaults =
-    [ScreenSaverDefaults defaultsForModuleWithName:BundleIdentifierString];
+  UserOptions *options = [UserOptions defaultUserOptions];
   
-  _videosQueue = [[NSMutableArray alloc] initWithArray:[defaults valueForKey:DefaultVideoListKey]];
-  _shuffle = [defaults boolForKey:DefaultShuffleKey];
+  _videosQueue = [[NSMutableArray alloc] initWithArray:[options videos]];
+  _shuffle = [options shuffle];
 
   DebugLog(@"Shuffle: %@", (_shuffle ? @"On" : @"Off"));
 
@@ -62,11 +61,6 @@
   _currentVideo = _videosQueue[0];
   [_videosQueue removeObjectAtIndex:0];
   return YES;
-}
-
-- (NSString*)currentVideoPath
-{
-  return [_currentVideo valueForKey:DefaultVideoPathKey];
 }
 
 - (void)discardCurrentVideo

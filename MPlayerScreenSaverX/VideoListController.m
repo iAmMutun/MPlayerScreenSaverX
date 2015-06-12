@@ -1,5 +1,9 @@
 #import "VideoListController.h"
 
+static NSString * const VideoListItemTypeString = @"th.in.iammutun.MPlayerScreenSaverX-video-list-item";
+
+
+
 @interface VideoListController ()
 {
   IBOutlet NSTableView* tableView;
@@ -20,7 +24,7 @@
   return [[self arrangedObjects] copy];
 }
 
-- (void)addVideo:(NSDictionary *)video
+- (void)addVideo:(VideoItem *)video
 {
   [self addVideos:@[video]];
 }
@@ -30,7 +34,7 @@
   [self insertVideos:videos atIndex:[[self arrangedObjects] count]];
 }
 
-- (void)insertVideo:(NSDictionary *)video atIndex:(NSUInteger)index
+- (void)insertVideo:(VideoItem *)video atIndex:(NSUInteger)index
 {
   [self insertVideos:@[video] atIndex:index];
 }
@@ -146,8 +150,7 @@
   [files enumerateObjectsUsingBlock:
     ^(id obj, NSUInteger idx, BOOL *stop)
   {
-    NSString* path = obj;
-    [videos addObject:@{DefaultVideoPathKey: path}];
+    [videos addObject:[VideoItem videoWithPath:obj]];
   }];
   [self insertVideos:videos atIndex:index];
 }
