@@ -5,6 +5,15 @@ static NSString * const FillScreenKey       = @"Fill";
 static NSString * const StretchToScreenKey  = @"Stretch";
 static NSString * const CenterToScreenKey   = @"Center";
 
+typedef enum
+{
+  ExtentFit,
+  ExtentFill,
+  ExtentStretch,
+  ExtentCenter
+}
+ExtentModeEnum;
+
 static NSArray* _extentModes = nil;
 static NSMutableDictionary* _extentModesDict = nil;
 static NSString* stringExtentFromEnum(ExtentModeEnum enumValue);
@@ -13,6 +22,9 @@ static void populateExtentsMode();
 
 
 @interface ExtentMode ()
+{
+  ExtentModeEnum _enumValue;
+}
 
 - (id)initWithEnum:(ExtentModeEnum)enumValue uiStringDict:(NSDictionary *)dict;
 
@@ -22,14 +34,7 @@ static void populateExtentsMode();
 
 @implementation ExtentMode
 
-+ (instancetype)extentModeWithEnum:(ExtentModeEnum)enumValue
-{
-  if (_extentModes == nil)
-    populateExtentsMode();
-  return [_extentModesDict valueForKey:stringExtentFromEnum(enumValue)];
-}
-
-+ (instancetype)extentModeWithString:(NSString*)stringValue
++ (instancetype)extentModeFromString:(NSString*)stringValue
 {
   if (_extentModes == nil)
     populateExtentsMode();
@@ -38,7 +43,7 @@ static void populateExtentsMode();
 
 + (instancetype)defaultMode
 {
-  return [ExtentMode extentModeWithEnum:ExtentFit];
+  return [ExtentMode extentModeFromString:stringExtentFromEnum(ExtentFit)];
 }
 
 + (NSArray*)allExtentModes

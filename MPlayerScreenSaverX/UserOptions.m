@@ -74,7 +74,7 @@ static NSString * const DefaultShuffleKey   = @"Shuffle";
 - (ExtentMode*)extent
 {
   NSString *extentString = [_defaults stringForKey:DefaultExtentKey];
-  return [ExtentMode extentModeWithString:extentString];
+  return [ExtentMode extentModeFromString:extentString];
 }
 
 - (void)setExtent:(ExtentMode*)extent

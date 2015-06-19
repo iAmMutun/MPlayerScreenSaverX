@@ -97,9 +97,8 @@ Muting is also recommended.</string>
                         </popUpButtonCell>
                         <connections>
                             <binding destination="0EU-Ka-XWG" name="content" keyPath="arrangedObjects" id="Rex-F9-asN"/>
-                            <binding destination="0EU-Ka-XWG" name="contentObjects" keyPath="arrangedObjects.enumValue" previousBinding="Rex-F9-asN" id="efp-kQ-cg6"/>
-                            <binding destination="0EU-Ka-XWG" name="contentValues" keyPath="arrangedObjects.uiString" previousBinding="efp-kQ-cg6" id="Jc5-q0-Qd3"/>
-                            <binding destination="0EU-Ka-XWG" name="selectedIndex" keyPath="selectionIndex" previousBinding="Jc5-q0-Qd3" id="eFS-4H-7UU"/>
+                            <binding destination="0EU-Ka-XWG" name="contentValues" keyPath="arrangedObjects.uiString" previousBinding="Rex-F9-asN" id="qvp-DM-XcO"/>
+                            <binding destination="0EU-Ka-XWG" name="selectedIndex" keyPath="selectionIndex" id="XL7-gX-ad6"/>
                         </connections>
                     </popUpButton>
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="SRb-Wt-4rC">
@@ -238,7 +237,6 @@ Gw
         <arrayController objectClassName="ExtentMode" id="0EU-Ka-XWG" userLabel="Extent Mode Controller">
             <declaredKeys>
                 <string>uiString</string>
-                <string>enumValue</string>
             </declaredKeys>
         </arrayController>
         <arrayController objectClassName="VideoItem" avoidsEmptySelection="NO" id="Yet-R2-Vee" customClass="VideoListController">

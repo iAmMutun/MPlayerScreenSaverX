@@ -3,23 +3,12 @@
 
 #import "Common.h"
 
-typedef enum
-{
-  ExtentFit,
-  ExtentFill,
-  ExtentStretch,
-  ExtentCenter
-}
-ExtentModeEnum;
-
 @interface ExtentMode : NSObject
 
-@property (readonly) ExtentModeEnum enumValue;
 @property (readonly) NSString *stringValue;
 @property (readonly) NSString *uiString;
 
-+ (instancetype)extentModeWithEnum:(ExtentModeEnum)enumValue;
-+ (instancetype)extentModeWithString:(NSString*)stringValue;
++ (instancetype)extentModeFromString:(NSString*)stringValue;
 + (instancetype)defaultMode;
 + (NSArray*)allExtentModes;
 
